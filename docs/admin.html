@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理画面：設定済み - Kashiwazaki Pattern Lock マニュアル</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <button class="hamburger-btn" aria-label="メニューを開く">&#9776;</button>
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <h2 style="color:#fff;">Kashiwazaki Pattern Lock</h2>
+            <span class="version">v1.0.0</span>
+            <img src="images/main-visual.png" alt="" style="width:100%;border-radius:4px;margin-top:8px;">
+        </div>
+        <ul>
+            <li><a href="index.html">概要</a></li>
+            <li><a href="setup.html">インストール・初期設定</a></li>
+            <li><a href="login.html">ログイン画面のパターン入力</a></li>
+            <li><a href="admin-initial.html">管理画面：初期設定</a></li>
+            <li><a href="admin.html">管理画面：設定済み</a></li>
+            <li><a href="troubleshooting.html">トラブルシューティング</a></li>
+            <li><a href="glossary.html">用語集</a></li>
+        </ul>
+    </nav>
+
+    <main class="content">
+        <h1>管理画面：設定済み</h1>
+        <p class="lead">パターンが設定されているときの管理画面です。設定の確認、パターンの変更・解除、ログイン制限の設定ができます。</p>
+
+        <figure class="screenshot">
+            <img src="images/08-admin-manage.png" alt="設定済みの管理画面の全体">
+            <figcaption>設定済みの管理画面。上から「現在の状態」「パターンの変更」「ログイン制限の設定」「パターンの解除」「対応範囲と制限」の5つのパネルがあります。</figcaption>
+        </figure>
+
+        <figure class="infographic">
+            <img src="images/infographics/admin.png" alt="管理画面の5つのパネル">
+            <figcaption>図: 管理画面の5つのパネル（解除は赤で強調）</figcaption>
+        </figure>
+
+        <section>
+            <h2>画面の地図</h2>
+            <table>
+                <thead>
+                    <tr><th>パネル</th><th>できること</th><th>使う場面</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>現在の状態</td><td>パターンが設定されているか、いつ更新されたか、ログイン保護が有効かを確認します。</td><td>日々の確認</td></tr>
+                    <tr><td>パターンの変更</td><td>新しいパターンに変えます。</td><td>パターンを変えたいとき</td></tr>
+                    <tr><td>ログイン制限の設定</td><td>何回失敗したら、何分ログインを制限するかを決めます。</td><td>セキュリティの調整</td></tr>
+                    <tr><td>パターンの解除</td><td>パターンをやめて、標準のログインに戻します。</td><td>プラグインを使わなくするとき</td></tr>
+                    <tr><td>対応範囲と制限</td><td>このパターンが効く範囲と、効かない範囲を確認します。</td><td>仕様の確認</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section id="status">
+            <h2>現在の状態</h2>
+            <figure class="screenshot">
+                <img src="images/09-status.png" alt="現在の状態パネル">
+                <figcaption>「現在の状態」パネル。</figcaption>
+            </figure>
+            <table>
+                <thead>
+                    <tr><th>項目</th><th>表示の意味</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>サイト共通パターン</td><td>「設定済み（N点）」の形で、設定されていることと点の数を示します。4〜5点のときは「点が多いほど推測されにくくなります（6点以上を推奨します）」と注意が出ます。</td></tr>
+                    <tr><td>最終更新</td><td>パターンを最後に設定・変更した日時です。設定した利用者の名前が付くことがあります。</td></tr>
+                    <tr><td>ログイン保護</td><td>「有効」と、標準ログイン画面でパターンが必要であることが表示されます。</td></tr>
+                </tbody>
+            </table>
+            <div class="callout callout-warning">
+                <div class="callout-title">パターンそのものは表示されません</div>
+                <p>画面にはパターンの内容（どの点をどの順でなぞるか）は表示されません。確認できるのは「設定済み」と点の数だけです。</p>
+            </div>
+        </section>
+
+        <section id="change">
+            <h2>パターンの変更</h2>
+            <figure class="screenshot">
+                <img src="images/10-change-open.png" alt="パターンの変更パネルを開いた状態">
+                <figcaption>「パターンを変更する」を押すと、入力欄が開きます。</figcaption>
+            </figure>
+            <p>変更すると、このサイトの標準ログイン画面を使う<strong>全ユーザー</strong>が新しいパターンを使うことになります。変更したら、利用者へ新しいパターンを案内してください。</p>
+
+            <h3>手順</h3>
+            <ol class="step">
+                <li><div class="step-number">1</div><div class="step-content"><p>「パターンを変更する」を押して、入力欄を開きます。</p></div></li>
+                <li><div class="step-number">2</div><div class="step-content"><p>「1. 新しいパターン」と「確認用パターン」に、同じパターンを2回入力します。</p></div></li>
+                <li><div class="step-number">3</div><div class="step-content"><p>「パターンを保存」を押します。次回のログインから新しいパターンが必要になります。</p></div></li>
+            </ol>
+
+            <table>
+                <thead>
+                    <tr><th>項目</th><th>説明</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>パターンを変更する</td><td>入力欄の開閉ボタンです。エラーで画面が戻ったときは、自動で開いた状態になります。</td></tr>
+                    <tr><td>1. 新しいパターン</td><td>新しいパターンを4点以上で入力します。</td></tr>
+                    <tr><td>確認用パターン</td><td>1と同じ順番でもう一度入力します。</td></tr>
+                    <tr><td>パターンを保存</td><td>変更を保存します。保存するとすぐに新しいパターンが有効になります。</td></tr>
+                </tbody>
+            </table>
+
+            <div class="callout callout-note">
+                <div class="callout-title">変更の反映</div>
+                <p>すでにログインしている利用者は、そのまま操作を続けられます。新しいパターンが必要になるのは、次にログインするときからです。</p>
+            </div>
+        </section>
+
+        <section id="limit">
+            <h2>ログイン制限の設定</h2>
+            <figure class="screenshot">
+                <img src="images/11-limit.png" alt="ログイン制限の設定パネル">
+                <figcaption>「ログイン制限の設定」パネル。</figcaption>
+            </figure>
+
+            <table>
+                <thead>
+                    <tr><th>項目</th><th>意味</th><th>既定値</th><th>入力できる範囲</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>連続失敗の上限回数</td><td>同じ IP アドレスとユーザー名の組み合わせで、この回数だけ認証に失敗するとログインを制限します。</td><td>5</td><td>1〜20</td></tr>
+                    <tr><td>制限する時間（分）</td><td>上限に達したあと、この時間が経つまでログインを受け付けません。</td><td>15</td><td>1〜1440（24時間）</td></tr>
+                </tbody>
+            </table>
+
+            <p><strong>ログイン制限を保存</strong> を押すと設定が保存され、画面上部に「ログイン制限を保存しました。同じ IP アドレスとユーザー名の組み合わせで N 回失敗すると、N 分間ログインを制限します。」と表示されます。</p>
+
+            <h3>制限のしくみ</h3>
+            <ul>
+                <li>失敗回数は、<strong>IP アドレスとユーザー名の組み合わせ</strong>ごとに数えます。別の場所から同じユーザー名で失敗しても、その利用者の回数には影響しません。</li>
+                <li>あわせて、<strong>同じ IP アドレスからの失敗</strong>が設定回数の 10 倍（最低 50 回）に達した場合も制限します。1つの接続元から多数のユーザー名を順に試す行為を止めるためです。</li>
+                <li>失敗回数には<strong>集計の期限</strong>があり、最初の失敗から設定した時間が過ぎると数え直しになります。</li>
+                <li>制限の時間は、<strong>上限に達した時点から</strong>数えます。</li>
+                <li>ログインに成功すると、その IP アドレスとユーザー名の組み合わせの回数は消えます。<strong>同じ接続元の全体の回数（IP 単位）は残ります。</strong></li>
+                <li>制限の解除は、時間が経つのを待つ方法だけです。</li>
+            </ul>
+
+            <div class="callout callout-note">
+                <div class="callout-title">同じ接続元を共有している場合</div>
+                <p>同じ IP アドレス（社内ネットワークなど）を複数の利用者で共有していると、IP 全体の回数が上限に達したときに、ほかの利用者もログインできなくなることがあります。</p>
+            </div>
+
+            <div class="callout callout-tip">
+                <div class="callout-title">おすすめ</div>
+                <p>ふだんは既定値（5回・15分）のままで問題ありません。入力ミスが多い現場では、回数を少し増やすと締め出されにくくなります。</p>
+            </div>
+        </section>
+
+        <section id="clear">
+            <h2>パターンの解除</h2>
+            <figure class="screenshot">
+                <img src="images/12-clear.png" alt="パターンの解除パネル">
+                <figcaption>「パターンの解除」パネル。赤い帯で危険な操作であることが分かります。</figcaption>
+            </figure>
+            <p>解除すると、このサイトの標準ログイン画面を使う全ユーザーで、パターン入力が不要になります。解除後は、パターンを設定し直すまで標準のログインに戻ります。</p>
+
+            <table>
+                <thead>
+                    <tr><th>項目</th><th>説明</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>「上記を確認しました」チェック</td><td>解除の影響を確認したことを示すチェックです。チェックしないと解除できません。</td></tr>
+                    <tr><td>パターン設定を解除</td><td>解除を実行します。実行すると、画面は初期設定画面に戻ります。</td></tr>
+                </tbody>
+            </table>
+
+            <div class="callout callout-warning">
+                <div class="callout-title">解除は取り消せません</div>
+                <p>解除するとパターンは消えます。元に戻すには、もう一度パターンを設定し直す必要があります。</p>
+            </div>
+
+            <p>解除すると、画面上部に「パターンを解除しました。ログインはパターンなしの標準認証に戻りました。」と表示され、初期設定画面に切り替わります。</p>
+        </section>
+
+        <section id="scope">
+            <h2>対応範囲と制限</h2>
+            <figure class="screenshot">
+                <img src="images/13-scope.png" alt="対応範囲と制限パネル">
+                <figcaption>「対応範囲と制限」パネル（クリックで開きます）。</figcaption>
+            </figure>
+            <ul>
+                <li>パターン認証が働くのは、WordPress 標準のログイン画面だけです。</li>
+                <li>REST API・アプリケーションパスワード・XML-RPC は対象外で、これまでどおりユーザー名とパスワードだけで認証されます。</li>
+                <li>ログイン済みの Cookie は対象外です。すでにログインしている利用者はそのまま操作できます。</li>
+                <li>パターンを忘れた場合や設定を誤った場合は、プラグインのフォルダー名を変えて無効化してください。くわしくは<a href="troubleshooting.html#forgot">トラブルシューティング</a>をご覧ください。</li>
+            </ul>
+
+            <div class="callout callout-note">
+                <div class="callout-title">「対象外」とは</div>
+                <p>アプリや外部サービスから接続する場合など、標準ログイン画面以外の方法ではパターンは求められません。パターンは、標準ログイン画面にもう1つ関門を足すものです。サイト全体の認証をこれだけで固めるものではありません。</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>メッセージ一覧</h2>
+            <table>
+                <thead>
+                    <tr><th>メッセージ</th><th>意味</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>パターンを変更しました。次回のログインから新しいパターンが必要になります。</td><td>変更が保存されました。</td></tr>
+                    <tr><td>ログイン制限を保存しました。…N 回失敗すると、N 分間ログインを制限します。</td><td>制限の設定が保存されました。</td></tr>
+                    <tr><td>パターンを解除しました。ログインはパターンなしの標準認証に戻りました。</td><td>解除が完了しました。</td></tr>
+                    <tr><td>確認用のパターンが一致しませんでした。新しいパターンと確認用パターンを、両方入力し直してください。</td><td>2つのパターンが違います。</td></tr>
+                    <tr><td>設定の値が範囲外です。失敗回数は 1〜20、制限時間は 1〜1440 分で指定してください。</td><td>入力した数値が範囲外です。</td></tr>
+                    <tr><td>解除の影響を確認し、「上記を確認しました」にチェックを入れてください。</td><td>チェックが入っていません。</td></tr>
+                    <tr><td>パターンを保存できませんでした。もう一度お試しください。</td><td>保存に失敗しました。</td></tr>
+                    <tr><td>パターンを解除できませんでした。もう一度お試しください。</td><td>解除に失敗しました。</td></tr>
+                    <tr><td>ログイン制限の設定を保存できませんでした。もう一度お試しください。</td><td>設定の保存に失敗しました。</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <nav class="page-nav">
+            <a href="admin-initial.html" class="prev">&laquo; 管理画面：初期設定</a>
+            <a href="troubleshooting.html" class="next">トラブルシューティング &raquo;</a>
+        </nav>
+
+        <footer class="manual-footer">
+            <p>作者: <a href="https://www.tsuyoshikashiwazaki.jp/profile/" target="_blank" rel="noopener">柏崎剛 (Tsuyoshi Kashiwazaki)</a></p>
+            <p>プラグイン: Kashiwazaki Pattern Lock v1.0.0 | <a href="https://www.tsuyoshikashiwazaki.jp" target="_blank" rel="noopener">公式サイト</a></p>
+        </footer>
+    </main>
+
+    <div class="lightbox"></div>
+    <script src="js/manual.js"></script>
+</body>
+</html>

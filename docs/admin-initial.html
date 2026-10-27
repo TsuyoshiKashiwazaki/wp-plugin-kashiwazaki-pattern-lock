@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理画面：初期設定 - Kashiwazaki Pattern Lock マニュアル</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <button class="hamburger-btn" aria-label="メニューを開く">&#9776;</button>
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <h2 style="color:#fff;">Kashiwazaki Pattern Lock</h2>
+            <span class="version">v1.0.0</span>
+            <img src="images/main-visual.png" alt="" style="width:100%;border-radius:4px;margin-top:8px;">
+        </div>
+        <ul>
+            <li><a href="index.html">概要</a></li>
+            <li><a href="setup.html">インストール・初期設定</a></li>
+            <li><a href="login.html">ログイン画面のパターン入力</a></li>
+            <li><a href="admin-initial.html">管理画面：初期設定</a></li>
+            <li><a href="admin.html">管理画面：設定済み</a></li>
+            <li><a href="troubleshooting.html">トラブルシューティング</a></li>
+            <li><a href="glossary.html">用語集</a></li>
+        </ul>
+    </nav>
+
+    <main class="content">
+        <h1>管理画面：初期設定</h1>
+        <p class="lead">まだパターンが設定されていないときに表示される画面です。ここでパターンを決めると、次回のログインからパターンが必要になります。</p>
+
+        <figure class="screenshot">
+            <img src="images/06-admin-initial.png" alt="初期設定画面の全体">
+            <figcaption>初期設定画面の全体。上から「初期設定」「補足」の2つのパネルがあります。</figcaption>
+        </figure>
+
+        <figure class="infographic">
+            <img src="images/infographics/admin-initial.png" alt="初期設定の手順">
+            <figcaption>図: 初期設定の3ステップ</figcaption>
+        </figure>
+
+        <section>
+            <h2>画面の地図</h2>
+            <table>
+                <thead>
+                    <tr><th>部分</th><th>内容</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>パネル「初期設定」</td><td>説明文、2つのパターン入力、キーボードの案内、保存ボタンが入っています。</td></tr>
+                    <tr><td>パネル「補足（推奨設定・困ったときの戻し方）」</td><td>おすすめの設定と、パターンを忘れたときの手順が入っています。クリックで開きます。</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section>
+            <h2>設定のしかた</h2>
+            <ol class="step">
+                <li>
+                    <div class="step-number">1</div>
+                    <div class="step-content"><p><strong>1. 新しいパターン</strong> の盤面で、4点以上をなぞります。</p></div>
+                </li>
+                <li>
+                    <div class="step-number">2</div>
+                    <div class="step-content"><p><strong>確認用パターン</strong> の盤面で、1と同じ順番でもう一度なぞります。</p></div>
+                </li>
+                <li>
+                    <div class="step-number">3</div>
+                    <div class="step-content"><p><strong>パターンを保存して開始</strong> を押します。画面が「設定済み」の管理画面に切り替わります。</p></div>
+                </li>
+            </ol>
+
+            <figure class="screenshot">
+                <img src="images/15-setup-panel.png" alt="初期設定パネルの拡大">
+                <figcaption>初期設定パネル。2つの盤面は横に並びます（スマートフォンでは縦に並びます）。</figcaption>
+            </figure>
+        </section>
+
+        <section>
+            <h2>項目の説明</h2>
+
+            <h3>1. 新しいパターン</h3>
+            <p>これから使うパターンを入力します。盤面の下の「4点以上」は、入力に必要な点数のことです。</p>
+            <ul>
+                <li>既定値: 未入力</li>
+                <li>入力できる点数: 4点以上（9点まで）</li>
+                <li>同じ点は1回だけ使えます。</li>
+                <li>飛び越えた点は、途中の点も選ばれたものとして扱われます。</li>
+            </ul>
+
+            <h3>確認用パターン</h3>
+            <p>1で入力したパターンを、同じ順番でもう一度入力します。2つが一致しないと保存できません。</p>
+            <ul>
+                <li>既定値: 未入力</li>
+                <li>説明文: 「1で入力したパターンを、同じ順番で入力してください。」</li>
+            </ul>
+
+            <h3>キーボードでも入力できます</h3>
+            <p>盤面の点にフォーカスがあるとき、矢印キーで移動、Space または Enter で選択、Backspace で1点戻す、Esc でクリアできます。</p>
+
+            <h3>パターンを保存して開始</h3>
+            <p>入力したパターンを保存します。保存すると、次回のログインからパターンが必要になります。</p>
+            <ul>
+                <li>取り消し: 保存後に解除できます（<a href="admin.html#clear">パターンの解除</a>）。</li>
+                <li>保存されるのはパターンそのものではなく、照合のための情報です。画面に戻ることはありません。</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>補足パネル</h2>
+            <figure class="screenshot">
+                <img src="images/14-setup-help.png" alt="補足パネルを開いた状態">
+                <figcaption>「補足（推奨設定・困ったときの戻し方）」を開いた状態。</figcaption>
+            </figure>
+            <ul>
+                <li><strong>点が多いほど第三者が言い当てにくくなります（6点以上を推奨します）。</strong></li>
+                <li><strong>ログイン制限（連続失敗の回数・時間）は、パターン設定後にこの画面で設定できます。</strong></li>
+                <li><strong>パターンを忘れた場合</strong>: 管理画面にも入れなくなります。サーバーのファイル管理画面や FTP でプラグインのフォルダー名を変えて無効化すると、標準のログインに戻ります。くわしくは<a href="troubleshooting.html#forgot">トラブルシューティング</a>をご覧ください。</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>エラーが出たとき</h2>
+            <figure class="screenshot">
+                <img src="images/07-initial-error.png" alt="確認用パターンが一致しないときの表示">
+                <figcaption>確認用パターンが一致しないとき。画面上部と、盤面の直前にメッセージが出ます。</figcaption>
+            </figure>
+
+            <h3>送信前に出るエラー（画面内・入力は残ります）</h3>
+            <p>保存を押したときに、盤面の下へ赤字で出ます。送信は行われず、<strong>入力した内容はそのまま残ります</strong>。</p>
+            <table>
+                <thead>
+                    <tr><th>メッセージ</th><th>意味</th><th>対処</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>パターンが入力されていません。点をなぞって入力してください。</td><td>どちらかの盤面が未入力のまま保存を押しました。</td><td>足りない盤面を入力します。</td></tr>
+                    <tr><td>パターンが短すぎます。4点以上をなぞってください。</td><td>どちらかの盤面が4点未満です。</td><td>4点以上になるまで点を増やします。</td></tr>
+                </tbody>
+            </table>
+
+            <h3>保存した後に出るエラー（画面上部とフォーム内）</h3>
+            <p>画面が切り替わるため、<strong>2つの盤面はどちらも空に戻ります</strong>。新しいパターンと確認用を、両方入力し直してください。</p>
+            <table>
+                <thead>
+                    <tr><th>メッセージ</th><th>意味</th><th>対処</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>パターンが入力されていません。9点のうち4点以上をなぞって入力してください。</td><td>新しいパターンが空のまま送信されました。</td><td>2つの盤面を入力し直します。</td></tr>
+                    <tr><td>パターンが短すぎます。4点以上で入力してください。</td><td>4点未満のパターンが送信されました。</td><td>4点以上で入力し直します。</td></tr>
+                    <tr><td>確認用のパターンが一致しませんでした。新しいパターンと確認用パターンを、両方入力し直してください。</td><td>2つのパターンが違います。</td><td>2つとも入力し直します。</td></tr>
+                    <tr><td>パターンを読み取れませんでした。もう一度なぞって入力してください。</td><td>パターンの形が正しく送信されませんでした。</td><td>もう一度なぞり直します（盤面は空に戻っています）。</td></tr>
+                    <tr><td>パターンを保存できませんでした。もう一度お試しください。</td><td>保存に失敗しました。</td><td>時間をおいて、もう一度保存します。</td></tr>
+                </tbody>
+            </table>
+
+            <div class="callout callout-note">
+                <div class="callout-title">「入力を消す」が押せないとき</div>
+                <p>盤面が空のときは、「入力を消す」は押せません。空の盤面に入力し直してください。</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>保存できたとき</h2>
+            <p>画面上部に「パターンを設定しました。次回のログインからパターンが必要になります。」と表示され、画面が<a href="admin.html">設定済みの管理画面</a>に切り替わります。</p>
+        </section>
+
+        <nav class="page-nav">
+            <a href="login.html" class="prev">&laquo; ログイン画面のパターン入力</a>
+            <a href="admin.html" class="next">管理画面：設定済み &raquo;</a>
+        </nav>
+
+        <footer class="manual-footer">
+            <p>作者: <a href="https://www.tsuyoshikashiwazaki.jp/profile/" target="_blank" rel="noopener">柏崎剛 (Tsuyoshi Kashiwazaki)</a></p>
+            <p>プラグイン: Kashiwazaki Pattern Lock v1.0.0 | <a href="https://www.tsuyoshikashiwazaki.jp" target="_blank" rel="noopener">公式サイト</a></p>
+        </footer>
+    </main>
+
+    <div class="lightbox"></div>
+    <script src="js/manual.js"></script>
+</body>
+</html>

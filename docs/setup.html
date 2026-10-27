@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>インストール・初期設定 - Kashiwazaki Pattern Lock マニュアル</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <button class="hamburger-btn" aria-label="メニューを開く">&#9776;</button>
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <h2 style="color:#fff;">Kashiwazaki Pattern Lock</h2>
+            <span class="version">v1.0.0</span>
+            <img src="images/main-visual.png" alt="" style="width:100%;border-radius:4px;margin-top:8px;">
+        </div>
+        <ul>
+            <li><a href="index.html">概要</a></li>
+            <li><a href="setup.html">インストール・初期設定</a></li>
+            <li><a href="login.html">ログイン画面のパターン入力</a></li>
+            <li><a href="admin-initial.html">管理画面：初期設定</a></li>
+            <li><a href="admin.html">管理画面：設定済み</a></li>
+            <li><a href="troubleshooting.html">トラブルシューティング</a></li>
+            <li><a href="glossary.html">用語集</a></li>
+        </ul>
+    </nav>
+
+    <main class="content">
+        <h1>インストール・初期設定</h1>
+        <p class="lead">プラグインを有効化してから、最初のパターンを設定するまでの流れです。設定が終わるまでは、ログインは今までどおりユーザー名とパスワードだけで行えます。</p>
+
+        <figure class="infographic">
+            <img src="images/infographics/setup.png" alt="インストールから初期設定までの流れ">
+            <figcaption>図: インストールから初期設定までの流れ</figcaption>
+        </figure>
+
+        <section>
+            <h2>1. プラグインを入れて有効化する</h2>
+            <ol class="step">
+                <li>
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <p>プラグインのフォルダーを <strong>wp-content/plugins/</strong> にアップロードします。</p>
+                    </div>
+                </li>
+                <li>
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <p>管理画面の「プラグイン」→「インストール済みプラグイン」を開き、<strong>Kashiwazaki Pattern Lock</strong> の「有効化」を押します。</p>
+                    </div>
+                </li>
+                <li>
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <p>有効化すると、管理画面に<strong>初期設定画面</strong>が自動で開きます。開かない場合は、左メニューの <strong>Kashiwazaki Pattern Lock</strong>、またはプラグイン一覧の「初期設定」リンクから開けます。</p>
+                    </div>
+                </li>
+            </ol>
+
+            <div class="callout callout-note">
+                <div class="callout-title">複数のプラグインをまとめて有効化したとき</div>
+                <p>一括で有効化したときは自動で移動しません。プラグイン一覧の「初期設定」リンクから開いてください。</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>2. プラグイン一覧での表示</h2>
+            <p>プラグイン一覧には、このプラグイン専用のリンクと案内が表示されます。</p>
+
+            <figure class="screenshot">
+                <img src="images/16-plugin-notice.png" alt="プラグイン一覧の上部に出る案内">
+                <figcaption>パターンが未設定の間は、画面上部に設定をうながす案内が出ます。</figcaption>
+            </figure>
+            <p>案内には「Kashiwazaki Pattern Lock: パターンがまだ設定されていません。初期設定画面でパターンを設定してください。」と表示されます。リンクを押すと、そのまま設定画面が開きます。</p>
+
+            <figure class="screenshot">
+                <img src="images/15-plugin-row.png" alt="プラグイン一覧の Kashiwazaki Pattern Lock の行">
+                <figcaption>「初期設定」（設定済みのときは「設定」）リンクから、いつでも設定画面を開けます。</figcaption>
+            </figure>
+
+            <table>
+                <thead>
+                    <tr><th>表示</th><th>意味</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>初期設定</td><td>まだパターンが設定されていません。このリンクから設定画面を開けます。</td></tr>
+                    <tr><td>設定</td><td>パターンが設定済みです。このリンクから設定画面を開けます。</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section>
+            <h2>3. 最初のパターンを設定する</h2>
+            <p>初期設定画面で、サイト共通のパターンを決めます。くわしい操作は<a href="admin-initial.html">管理画面：初期設定</a>をご覧ください。</p>
+
+            <figure class="screenshot">
+                <img src="images/06-admin-initial.png" alt="初期設定画面の全体">
+                <figcaption>初期設定画面。9点の盤面が2つ並びます。</figcaption>
+            </figure>
+
+            <div class="callout callout-tip">
+                <div class="callout-title">おすすめ</div>
+                <p>使う点は多いほど推測されにくくなります。6点以上をおすすめします。</p>
+            </div>
+
+            <div class="callout callout-warning">
+                <div class="callout-title">設定する前にご確認ください</div>
+                <p>設定すると、次回のログインからパターンが必要になります。パターンを忘れると管理画面に入れなくなります。復旧の手順は<a href="troubleshooting.html#forgot">トラブルシューティング</a>にまとめています。</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>4. 管理メニューの場所</h2>
+            <p>設定画面は、管理画面の左メニューにも <strong>Kashiwazaki Pattern Lock</strong> として表示されます。メニューの並びは「設定」のすぐ下です。</p>
+            <p>パターンが未設定のときは初期設定画面、設定済みのときは管理画面が開きます。</p>
+        </section>
+
+        <section>
+            <h2>5. 設定後に起きること</h2>
+            <table>
+                <thead>
+                    <tr><th>きっかけ</th><th>起きること</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>プラグインを有効化</td><td>パターンが未設定の間は、ログインはこれまでどおりです。</td></tr>
+                    <tr><td>パターンを保存</td><td>次回のログインからパターンが必要になります。画面は「設定済み」の管理画面に変わります。</td></tr>
+                    <tr><td>プラグインを無効化</td><td>パターン入力欄が消え、標準のログインに戻ります。設定内容は残ります。</td></tr>
+                    <tr><td>プラグインを削除</td><td>設定内容と失敗回数の記録が削除されます。</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <nav class="page-nav">
+            <a href="index.html" class="prev">&laquo; 概要</a>
+            <a href="login.html" class="next">ログイン画面のパターン入力 &raquo;</a>
+        </nav>
+
+        <footer class="manual-footer">
+            <p>作者: <a href="https://www.tsuyoshikashiwazaki.jp/profile/" target="_blank" rel="noopener">柏崎剛 (Tsuyoshi Kashiwazaki)</a></p>
+            <p>プラグイン: Kashiwazaki Pattern Lock v1.0.0 | <a href="https://www.tsuyoshikashiwazaki.jp" target="_blank" rel="noopener">公式サイト</a></p>
+        </footer>
+    </main>
+
+    <div class="lightbox"></div>
+    <script src="js/manual.js"></script>
+</body>
+</html>

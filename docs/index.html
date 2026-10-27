@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>概要 - Kashiwazaki Pattern Lock マニュアル</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <button class="hamburger-btn" aria-label="メニューを開く">&#9776;</button>
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <h2 style="color:#fff;">Kashiwazaki Pattern Lock</h2>
+            <span class="version">v1.0.0</span>
+            <img src="images/main-visual.png" alt="" style="width:100%;border-radius:4px;margin-top:8px;">
+        </div>
+        <ul>
+            <li><a href="index.html">概要</a></li>
+            <li><a href="setup.html">インストール・初期設定</a></li>
+            <li><a href="login.html">ログイン画面のパターン入力</a></li>
+            <li><a href="admin-initial.html">管理画面：初期設定</a></li>
+            <li><a href="admin.html">管理画面：設定済み</a></li>
+            <li><a href="troubleshooting.html">トラブルシューティング</a></li>
+            <li><a href="glossary.html">用語集</a></li>
+        </ul>
+    </nav>
+
+    <main class="content">
+        <h1>Kashiwazaki Pattern Lock マニュアル</h1>
+        <img src="images/main-visual.png" alt="Kashiwazaki Pattern Lock メインビジュアル" style="width:100%; border-radius:8px; margin-bottom:24px;">
+        <p class="lead">WordPress 標準のログイン画面に、9点のうち4点以上をなぞるパターン入力を追加するプラグインです。ユーザー名・パスワード・パターンの3つがそろったときだけログインできます。</p>
+
+        <section>
+            <h2>主要機能</h2>
+            <div class="feature-cards">
+                <div class="feature-card">
+                    <h3>9点パターンでログイン</h3>
+                    <p>ログイン画面に3×3の9点が表示されます。マウスや指でなぞるか、キーボードで選んでパターンを入力します。</p>
+                </div>
+                <div class="feature-card">
+                    <h3>管理画面で設定</h3>
+                    <p>サイト共通のパターンを1つ決めます。確認のため2回入力し、変更や解除も管理画面から行えます。</p>
+                </div>
+                <div class="feature-card">
+                    <h3>連続失敗を制限</h3>
+                    <p>認証の失敗が続くと、一定時間ログインを受け付けません。回数と時間は管理画面で変えられます。</p>
+                </div>
+            </div>
+        </section>
+
+        <figure class="infographic">
+            <img src="images/infographics/overview.png" alt="パターン認証の全体像">
+            <figcaption>図: パターン認証の全体像（設定 → ログイン → 制限）</figcaption>
+        </figure>
+
+        <section>
+            <h2>できること</h2>
+            <ul>
+                <li>WordPress 標準のログイン画面に、9点のパターン入力欄（4点以上で入力）を自動で表示します（ショートコードは不要です）。</li>
+                <li>PC ではマウス、スマートフォンやタブレットでは指でなぞって入力できます。</li>
+                <li>キーボードでも入力できます（矢印キーで移動、Space または Enter で選択）。</li>
+                <li>選んだ点と、点を結ぶ線が画面に表示されます。入力を消してやり直せます。</li>
+                <li>パターンは4点以上。同じ点は1つのパターン内で1回だけ使えます。</li>
+                <li>飛び越えた点がある場合は、途中の点も選ばれたものとして扱われます。</li>
+                <li>パターンを忘れた場合に備え、プラグインを無効化して元に戻す手順を用意しています。</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>画面の地図</h2>
+            <p>このマニュアルで説明している画面は、次のとおりです。</p>
+            <ul>
+                <li><a href="login.html">ログイン画面のパターン入力</a> — 利用者がログインするときに使う画面です。</li>
+                <li><a href="admin-initial.html">管理画面：初期設定</a> — はじめてパターンを決めるときの画面です。</li>
+                <li><a href="admin.html">管理画面：設定済み</a> — 設定の確認・変更・解除、ログイン制限の設定を行う画面です。</li>
+                <li><a href="setup.html">インストール・初期設定</a> — プラグインを有効化して、最初の設定までの流れです。</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>目次</h2>
+            <ul>
+                <li><a href="index.html">概要</a> - プラグインの概要と主要機能の紹介</li>
+                <li><a href="setup.html">インストール・初期設定</a> - 有効化から最初のパターン設定まで</li>
+                <li><a href="login.html">ログイン画面のパターン入力</a> - 入力のしかた、状態表示、エラーの意味</li>
+                <li><a href="admin-initial.html">管理画面：初期設定</a> - はじめてパターンを決めるときの画面</li>
+                <li><a href="admin.html">管理画面：設定済み</a> - 状態の確認、変更、解除、ログイン制限</li>
+                <li><a href="troubleshooting.html">トラブルシューティング</a> - うまくいかないときの確認事項</li>
+                <li><a href="glossary.html">用語集</a> - このマニュアルで使う言葉の意味</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>動作要件</h2>
+            <ul>
+                <li>WordPress 6.0 以上</li>
+                <li>PHP 7.4 以上</li>
+                <li>モダンブラウザ（Chrome / Firefox / Safari / Edge の現行版）</li>
+                <li>パターン入力には JavaScript が必要です。</li>
+            </ul>
+        </section>
+
+        <div class="callout callout-warning">
+            <div class="callout-title">ご注意</div>
+            <p>このパターン入力は、WordPress 標準のログイン画面だけが対象です。アプリ・外部サービスからの接続など、標準ログイン画面以外の方法ではパターンは求められません。詳しくは<a href="admin.html#scope">対応範囲</a>をご覧ください。</p>
+        </div>
+
+        <nav class="page-nav">
+            <span></span>
+            <a href="setup.html" class="next">インストール・初期設定 &raquo;</a>
+        </nav>
+
+        <footer class="manual-footer">
+            <p>作者: <a href="https://www.tsuyoshikashiwazaki.jp/profile/" target="_blank" rel="noopener">柏崎剛 (Tsuyoshi Kashiwazaki)</a></p>
+            <p>プラグイン: Kashiwazaki Pattern Lock v1.0.0 | <a href="https://www.tsuyoshikashiwazaki.jp" target="_blank" rel="noopener">公式サイト</a></p>
+        </footer>
+    </main>
+
+    <div class="lightbox"></div>
+    <script src="js/manual.js"></script>
+</body>
+</html>

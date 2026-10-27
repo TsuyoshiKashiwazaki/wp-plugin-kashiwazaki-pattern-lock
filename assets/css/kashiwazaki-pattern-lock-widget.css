@@ -1,0 +1,255 @@
+/**
+ * Kashiwazaki Pattern Lock - 9点パターン入力ウィジェット。
+ *
+ * ログイン画面と管理画面の両方で読み込む。
+ */
+
+.kashiwazaki-pattern-lock {
+	--kashiwazaki-pattern-lock-accent: #2271b1;
+	--kashiwazaki-pattern-lock-accent-dark: #135e96;
+	--kashiwazaki-pattern-lock-dot-background: #ffffff;
+	--kashiwazaki-pattern-lock-dot-border: #8c8f94;
+	--kashiwazaki-pattern-lock-dot-text: #3c434a;
+	--kashiwazaki-pattern-lock-status: #646970;
+
+	box-sizing: border-box;
+	margin: 0 0 14px;
+	max-width: 100%;
+}
+
+.kashiwazaki-pattern-lock *,
+.kashiwazaki-pattern-lock *::before,
+.kashiwazaki-pattern-lock *::after {
+	box-sizing: inherit;
+}
+
+.kashiwazaki-pattern-lock__heading {
+	display: block;
+	margin: 0 0 6px;
+	text-align: center;
+}
+
+.kashiwazaki-pattern-lock__label {
+	display: block;
+	color: #1d2327;
+	font-size: 14px;
+	font-weight: 600;
+	line-height: 1.4;
+}
+
+.kashiwazaki-pattern-lock__help {
+	display: block;
+	margin-top: 2px;
+	color: var(--kashiwazaki-pattern-lock-status);
+	font-size: 12px;
+	line-height: 1.5;
+}
+
+.kashiwazaki-pattern-lock__frame {
+	position: relative;
+	width: 220px;
+	max-width: 100%;
+	margin: 0 auto 6px;
+}
+
+/* aspect-ratio に対応していない環境でも正方形を保つ。 */
+.kashiwazaki-pattern-lock__frame::before {
+	content: "";
+	display: block;
+	padding-top: 100%;
+}
+
+.kashiwazaki-pattern-lock__lines {
+	position: absolute;
+	inset: 0;
+	display: block;
+	width: 100%;
+	height: 100%;
+	overflow: visible;
+	pointer-events: none;
+}
+
+.kashiwazaki-pattern-lock__path {
+	fill: none;
+	stroke: var(--kashiwazaki-pattern-lock-accent);
+	stroke-width: 4;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+	opacity: 0.85;
+}
+
+.kashiwazaki-pattern-lock__preview {
+	stroke: var(--kashiwazaki-pattern-lock-accent);
+	stroke-width: 3;
+	stroke-linecap: round;
+	stroke-dasharray: 6 6;
+	opacity: 0.45;
+}
+
+.kashiwazaki-pattern-lock__grid {
+	position: absolute;
+	inset: 0;
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	grid-template-rows: repeat(3, 1fr);
+	margin: 0;
+	padding: 0;
+	touch-action: none;
+	user-select: none;
+	-webkit-user-select: none;
+	-webkit-touch-callout: none;
+}
+
+.kashiwazaki-pattern-lock__dot {
+	align-self: center;
+	justify-self: center;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 52px;
+	height: 52px;
+	margin: 0;
+	padding: 0;
+	border: 2px solid var(--kashiwazaki-pattern-lock-dot-border);
+	border-radius: 50%;
+	background: var(--kashiwazaki-pattern-lock-dot-background);
+	color: var(--kashiwazaki-pattern-lock-dot-text);
+	font-family: inherit;
+	font-size: 13px;
+	font-weight: 600;
+	line-height: 1;
+	appearance: none;
+	-webkit-appearance: none;
+	cursor: pointer;
+	touch-action: none;
+	transition: background-color 0.12s ease-out, border-color 0.12s ease-out, color 0.12s ease-out,
+		box-shadow 0.12s ease-out, transform 0.12s ease-out;
+}
+
+.kashiwazaki-pattern-lock__dot:hover {
+	border-color: var(--kashiwazaki-pattern-lock-accent);
+}
+
+.kashiwazaki-pattern-lock__dot:focus {
+	outline: none;
+}
+
+.kashiwazaki-pattern-lock__dot:focus-visible {
+	outline: 2px solid var(--kashiwazaki-pattern-lock-accent-dark);
+	outline-offset: 3px;
+}
+
+.kashiwazaki-pattern-lock__dot.is-selected {
+	border-color: var(--kashiwazaki-pattern-lock-accent);
+	background: var(--kashiwazaki-pattern-lock-accent);
+	color: #ffffff;
+	box-shadow: 0 0 0 4px rgba(34, 113, 177, 0.18);
+}
+
+.kashiwazaki-pattern-lock__dot:active {
+	transform: scale(0.94);
+}
+
+.kashiwazaki-pattern-lock__footer {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 4px 8px;
+	max-width: 220px;
+	margin: 0 auto;
+}
+
+.kashiwazaki-pattern-lock__status {
+	flex: 1 1 0%;
+	min-width: 0;
+	min-height: 1.5em;
+	color: var(--kashiwazaki-pattern-lock-status);
+	font-size: 12px;
+	line-height: 1.5;
+	text-align: left;
+}
+
+.kashiwazaki-pattern-lock__status.is-error {
+	color: #b32d2e;
+	font-size: 13px;
+	font-weight: 600;
+	line-height: 1.5;
+}
+
+/* エラー中は、消去ボタンに押されず全幅で読めるようにする。 */
+.kashiwazaki-pattern-lock.has-error .kashiwazaki-pattern-lock__status {
+	flex: 1 1 100%;
+}
+
+.kashiwazaki-pattern-lock.has-error .kashiwazaki-pattern-lock__frame {
+	border-radius: 10px;
+	outline: 2px solid #d63638;
+	outline-offset: 4px;
+}
+
+/* WordPress 本体の .wp-core-ui .button（margin: 0）に勝たせるため、詳細度を上げている。 */
+.kashiwazaki-pattern-lock .kashiwazaki-pattern-lock__clear {
+	flex: 0 0 auto;
+	margin-left: auto;
+	min-height: 44px;
+	min-width: 44px;
+	padding: 0 12px;
+	font-size: 12px;
+	line-height: 1.8;
+}
+
+.kashiwazaki-pattern-lock .kashiwazaki-pattern-lock__clear[disabled] {
+	cursor: default;
+	opacity: 0.5;
+}
+
+/* ログイン画面では、標準フォームの横幅（320px 前後）に収める。 */
+.kashiwazaki-pattern-lock-login {
+	margin: 0 0 16px;
+}
+
+.kashiwazaki-pattern-lock--login .kashiwazaki-pattern-lock__frame,
+.kashiwazaki-pattern-lock--login .kashiwazaki-pattern-lock__footer {
+	max-width: 220px;
+}
+
+.kashiwazaki-pattern-lock--login .kashiwazaki-pattern-lock__frame {
+	width: 220px;
+}
+
+.kashiwazaki-pattern-lock--login .kashiwazaki-pattern-lock__heading {
+	text-align: left;
+}
+
+.kashiwazaki-pattern-lock--login .kashiwazaki-pattern-lock__label {
+	color: #1d2327;
+	font-size: 14px;
+	font-weight: 400;
+}
+
+.kashiwazaki-pattern-lock-noscript {
+	margin: 8px 0 0;
+	color: #d63638;
+	font-size: 12px;
+}
+
+.kashiwazaki-pattern-lock__note {
+	margin: 6px 0 0;
+	color: var(--kashiwazaki-pattern-lock-status);
+	font-size: 12px;
+	line-height: 1.5;
+}
+
+@media (max-width: 480px) {
+	.kashiwazaki-pattern-lock__dot {
+		width: 46px;
+		height: 46px;
+		font-size: 12px;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.kashiwazaki-pattern-lock__dot {
+		transition: none;
+	}
+}

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用語集 - Kashiwazaki Pattern Lock マニュアル</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <button class="hamburger-btn" aria-label="メニューを開く">&#9776;</button>
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <h2 style="color:#fff;">Kashiwazaki Pattern Lock</h2>
+            <span class="version">v1.0.0</span>
+            <img src="images/main-visual.png" alt="" style="width:100%;border-radius:4px;margin-top:8px;">
+        </div>
+        <ul>
+            <li><a href="index.html">概要</a></li>
+            <li><a href="setup.html">インストール・初期設定</a></li>
+            <li><a href="login.html">ログイン画面のパターン入力</a></li>
+            <li><a href="admin-initial.html">管理画面：初期設定</a></li>
+            <li><a href="admin.html">管理画面：設定済み</a></li>
+            <li><a href="troubleshooting.html">トラブルシューティング</a></li>
+            <li><a href="glossary.html">用語集</a></li>
+        </ul>
+    </nav>
+
+    <main class="content">
+        <h1>用語集</h1>
+        <p class="lead">このマニュアルに出てくる言葉の意味をまとめました。</p>
+
+        <figure class="infographic">
+            <img src="images/infographics/glossary.png" alt="用語の関係">
+            <figcaption>図: パターン・ログイン制限・標準ログイン画面の関係</figcaption>
+        </figure>
+
+        <section>
+            <h2>あ行</h2>
+            <dl>
+                <dt>アプリケーションパスワード</dt>
+                <dd>WordPress の「プロフィール」画面で発行できる、アプリ専用のパスワードです。このパターンの対象外で、これまでどおりアプリから接続できます。</dd>
+            </dl>
+        </section>
+
+        <section>
+            <h2>か行</h2>
+            <dl>
+                <dt>管理画面</dt>
+                <dd>WordPress にログインしたあとに使う、投稿や設定を行う画面です。このマニュアルでは、パターンの設定を行う画面を指します。</dd>
+                <dt>プラグインの無効化</dt>
+                <dd>プラグインを無効にすると、パターン入力欄が消えて標準のログインに戻ります。パターンを忘れたときの復旧方法として使います。ログイン済みの利用者がログアウトされるわけではありません。</dd>
+            </dl>
+        </section>
+
+        <section>
+            <h2>さ行</h2>
+            <dl>
+                <dt>サイト共通パターン</dt>
+                <dd>このサイトのすべての利用者が使う、1つのパターンです。ユーザーごとに変えることはできません。</dd>
+                <dt>状態の表示</dt>
+                <dd>パターン欄の下に出る「未入力」「選択中：N点」「入力済み：N点」の表示です。入力の進み具合が分かります。</dd>
+            </dl>
+        </section>
+
+        <section>
+            <h2>た行</h2>
+            <dl>
+                <dt>追加のパターン認証</dt>
+                <dd>パスワードに加えて、サイト共通のパターンを確認する仕組みです。パスワードとパターンはどちらも記憶する情報で、所有物や生体情報を確かめるものではありません。</dd>
+            </dl>
+        </section>
+
+        <section>
+            <h2>は行</h2>
+            <dl>
+                <dt>パターン</dt>
+                <dd>9つの点を、決まった順番でなぞった形のことです。このプラグインでは、4点以上を使います。</dd>
+                <dt>パターンロック</dt>
+                <dd>スマートフォンの画面ロックなどで使われる、点をなぞって解除する方式のことです。このプラグインは同じ方式を WordPress のログインに使います。</dd>
+                <dt>標準ログイン画面</dt>
+                <dd>WordPress にもともと備わっているログイン画面です。ユーザー名（またはメールアドレス）とパスワードを入力します。このプラグインは、ここにパターン欄を追加します。</dd>
+            </dl>
+        </section>
+
+        <section>
+            <h2>ら行</h2>
+            <dl>
+                <dt>ログイン制限</dt>
+                <dd>認証の失敗が続いたときに、一定時間ログインを受け付けない仕組みです。回数と時間は管理画面で変えられます。</dd>
+                <dt>ログイン状態（Cookie）</dt>
+                <dd>一度ログインすると、しばらくの間はログインしたままになります。この状態はパターンの対象外で、すでにログインしている利用者はそのまま操作できます。</dd>
+            </dl>
+        </section>
+
+        <nav class="page-nav">
+            <a href="troubleshooting.html" class="prev">&laquo; トラブルシューティング</a>
+            <span></span>
+        </nav>
+
+        <footer class="manual-footer">
+            <p>作者: <a href="https://www.tsuyoshikashiwazaki.jp/profile/" target="_blank" rel="noopener">柏崎剛 (Tsuyoshi Kashiwazaki)</a></p>
+            <p>プラグイン: Kashiwazaki Pattern Lock v1.0.0 | <a href="https://www.tsuyoshikashiwazaki.jp" target="_blank" rel="noopener">公式サイト</a></p>
+        </footer>
+    </main>
+
+    <div class="lightbox"></div>
+    <script src="js/manual.js"></script>
+</body>
+</html>

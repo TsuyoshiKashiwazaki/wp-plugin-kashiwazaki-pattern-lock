@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ログイン画面のパターン入力 - Kashiwazaki Pattern Lock マニュアル</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <button class="hamburger-btn" aria-label="メニューを開く">&#9776;</button>
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <h2 style="color:#fff;">Kashiwazaki Pattern Lock</h2>
+            <span class="version">v1.0.0</span>
+            <img src="images/main-visual.png" alt="" style="width:100%;border-radius:4px;margin-top:8px;">
+        </div>
+        <ul>
+            <li><a href="index.html">概要</a></li>
+            <li><a href="setup.html">インストール・初期設定</a></li>
+            <li><a href="login.html">ログイン画面のパターン入力</a></li>
+            <li><a href="admin-initial.html">管理画面：初期設定</a></li>
+            <li><a href="admin.html">管理画面：設定済み</a></li>
+            <li><a href="troubleshooting.html">トラブルシューティング</a></li>
+            <li><a href="glossary.html">用語集</a></li>
+        </ul>
+    </nav>
+
+    <main class="content">
+        <h1>ログイン画面のパターン入力</h1>
+        <p class="lead">パターンが設定されているサイトでは、WordPress 標準のログイン画面にパターン欄が表示されます。ユーザー名・パスワード・パターンの3つを入力してログインします。</p>
+
+        <figure class="screenshot">
+            <img src="images/01-login.png" alt="パターン欄が表示されたログイン画面">
+            <figcaption>ログイン画面。「パスワード」の下にパターン欄が表示されます。</figcaption>
+        </figure>
+
+        <figure class="infographic">
+            <img src="images/infographics/login.png" alt="パターン入力の3つの方法と状態の移り変わり">
+            <figcaption>図: 入力方法と状態の移り変わり</figcaption>
+        </figure>
+
+        <section>
+            <h2>画面の地図</h2>
+            <p>パターン欄は、次の4つの部分からできています。</p>
+            <table>
+                <thead>
+                    <tr><th>番号</th><th>部分</th><th>説明</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>1</td><td>見出し「パターン」</td><td>パターン欄の名前です。サイトの設定でパターンが有効なときだけ表示されます。</td></tr>
+                    <tr><td>2</td><td>9点の盤面</td><td>1〜9の点が3×3に並びます。左上が1、右下が9です。</td></tr>
+                    <tr><td>3</td><td>状態の表示</td><td>「未入力」「選択中：N点」「入力済み：N点」のいずれかが表示されます。</td></tr>
+                    <tr><td>4</td><td>「入力を消す」ボタン</td><td>選んだ点をすべて消して、最初から入力し直せます。何も選んでいないときは押せません。</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section>
+            <h2>入力のしかた</h2>
+
+            <h3>マウス・指でなぞる</h3>
+            <ol class="step">
+                <li>
+                    <div class="step-number">1</div>
+                    <div class="step-content"><p>はじめの点の上で押します。</p></div>
+                </li>
+                <li>
+                    <div class="step-number">2</div>
+                    <div class="step-content"><p>押したまま、次の点へ指（マウス）を動かします。選んだ点どうしが線で結ばれます。</p></div>
+                </li>
+                <li>
+                    <div class="step-number">3</div>
+                    <div class="step-content"><p>最後の点で指を離します。選択はそのまま残ります。</p></div>
+                </li>
+            </ol>
+
+            <figure class="screenshot">
+                <img src="images/02-login-filled.png" alt="パターンを入力した状態">
+                <figcaption>5点を選んだ状態。状態の表示が「入力済み：5点」になります。</figcaption>
+            </figure>
+
+            <h3>キーボードで選ぶ</h3>
+            <p>盤面の点にフォーカスがあるとき、次のキーで操作できます。</p>
+            <table>
+                <thead>
+                    <tr><th>キー</th><th>動き</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>矢印キー</td><td>フォーカスを上下左右の点へ移します。</td></tr>
+                    <tr><td>Space / Enter</td><td>フォーカスしている点を選びます。</td></tr>
+                    <tr><td>Backspace</td><td>最後に選んだ点を1つ取り消します。</td></tr>
+                    <tr><td>Esc / Delete</td><td>選んだ点をすべて消します。</td></tr>
+                </tbody>
+            </table>
+
+            <div class="callout callout-note">
+                <div class="callout-title">ヒント</div>
+                <p>Tab キーでパターン欄に移動できます。点を選ぶと、選んだ点数が状態の表示に出ます。</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>パターンの決まり</h2>
+            <ul>
+                <li><strong>4点以上</strong>を使います。3点以下では送信できません。</li>
+                <li>同じ点は、1つのパターンの中で1回だけ使えます。2回目に触れても選ばれません。</li>
+                <li>まだ選んでいない点を飛び越えて線を引くと、<strong>途中の点も選ばれたものとして扱われます</strong>。たとえば 1 から 3 へなぞると、2 も選ばれて「1 → 2 → 3」になります。</li>
+                <li>点をなぞる順番が違えば、別のパターンです。</li>
+            </ul>
+
+            <div class="callout callout-tip">
+                <div class="callout-title">おすすめ</div>
+                <p>使う点が多いほど、第三者が言い当てにくくなります。6点以上をおすすめします。</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>状態の表示</h2>
+            <table>
+                <thead>
+                    <tr><th>表示</th><th>意味</th><th>次にすること</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>未入力</td><td>まだ点を選んでいません。</td><td>盤面をなぞって入力します。</td></tr>
+                    <tr><td>選択中：N点（4点以上必要）</td><td>4点未満です。まだ送信できません。</td><td>あと少し点を増やします。</td></tr>
+                    <tr><td>入力済み：N点</td><td>4点以上そろいました。ログインを押せます。</td><td>「ログイン」を押します。</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section>
+            <h2>エラーの意味と対処</h2>
+            <p>パターン欄の下に赤字で出るメッセージと、ログインを押したあとに画面上部へ出るメッセージがあります。</p>
+
+            <figure class="screenshot">
+                <img src="images/03-login-error.png" alt="パターンを入力せずにログインを押したときの表示">
+                <figcaption>パターンを入力せずにログインを押すと、送信されずその場でエラーが出ます。</figcaption>
+            </figure>
+
+            <figure class="screenshot">
+                <img src="images/04-login-wrong.png" alt="パターンが違うときの表示">
+                <figcaption>パターンが違うときは、画面の上にエラーが出ます。</figcaption>
+            </figure>
+
+            <table>
+                <thead>
+                    <tr><th>メッセージ</th><th>意味</th><th>対処</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>パターンが入力されていません。点をなぞって入力してください。</td><td>パターンを選ばずにログインを押しました。</td><td>盤面をなぞってから、もう一度ログインを押します。</td></tr>
+                    <tr><td>パターンが短すぎます。4点以上をなぞってください。</td><td>3点以下しか選んでいません。</td><td>4点以上になるまで点を増やします。</td></tr>
+                    <tr><td>パターンが入力されていません。9点のうち4点以上をなぞって入力してください。</td><td>パターンが送信されていません。</td><td>盤面をなぞってから、ログインを押します。</td></tr>
+                    <tr><td>パターンが短すぎます。9点のうち4点以上をなぞって入力してください。</td><td>4点未満のパターンが送信されました。</td><td>4点以上で入力し直します。</td></tr>
+                    <tr><td>パターンを読み取れませんでした。点をなぞり直して入力してください。</td><td>パターンの形が正しく送信されませんでした。</td><td>「入力を消す」を押して、もう一度なぞります。</td></tr>
+                    <tr><td>パターンが正しくありません。もう一度なぞって入力してください。</td><td>設定されているパターンと違います。</td><td>正しいパターンを入力し直します。</td></tr>
+                    <tr><td>ログインを制限しています。認証の失敗が続いたため、約 N 分後にもう一度お試しください。</td><td>失敗が続き、一時的にログインできません。</td><td>表示された時間が過ぎるまで待ちます。</td></tr>
+                </tbody>
+            </table>
+
+            <div class="callout callout-warning">
+                <div class="callout-title">パターンを間違えると点数は消えます</div>
+                <p>ログインに失敗すると、画面が切り替わってパターンの選択は消えます。ユーザー名・パスワード・パターンを、もう一度入力してください。</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>ログインが制限されたとき</h2>
+            <figure class="screenshot">
+                <img src="images/05-login-locked.png" alt="ログインが制限されているときの表示">
+                <figcaption>失敗が続くと、一定時間ログインできなくなります。</figcaption>
+            </figure>
+            <p>制限中は、正しいパターンを入力してもログインできません。表示された時間が過ぎると、自動的に解除されます。回数と時間は管理者が<a href="admin.html#limit">管理画面</a>で変更できます。</p>
+        </section>
+
+        <section>
+            <h2>パターンを忘れたとき</h2>
+            <p>パターンが分からないときは、サイト管理者に問い合わせてください。管理者でも管理画面に入れない場合は、<a href="troubleshooting.html#forgot">トラブルシューティングの「パターンを忘れた・管理画面に入れない」</a>をご覧ください。</p>
+        </section>
+
+        <nav class="page-nav">
+            <a href="setup.html" class="prev">&laquo; インストール・初期設定</a>
+            <a href="admin-initial.html" class="next">管理画面：初期設定 &raquo;</a>
+        </nav>
+
+        <footer class="manual-footer">
+            <p>作者: <a href="https://www.tsuyoshikashiwazaki.jp/profile/" target="_blank" rel="noopener">柏崎剛 (Tsuyoshi Kashiwazaki)</a></p>
+            <p>プラグイン: Kashiwazaki Pattern Lock v1.0.0 | <a href="https://www.tsuyoshikashiwazaki.jp" target="_blank" rel="noopener">公式サイト</a></p>
+        </footer>
+    </main>
+
+    <div class="lightbox"></div>
+    <script src="js/manual.js"></script>
+</body>
+</html>

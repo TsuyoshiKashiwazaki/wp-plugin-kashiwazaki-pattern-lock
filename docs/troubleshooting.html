@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>トラブルシューティング - Kashiwazaki Pattern Lock マニュアル</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <button class="hamburger-btn" aria-label="メニューを開く">&#9776;</button>
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <h2 style="color:#fff;">Kashiwazaki Pattern Lock</h2>
+            <span class="version">v1.0.0</span>
+            <img src="images/main-visual.png" alt="" style="width:100%;border-radius:4px;margin-top:8px;">
+        </div>
+        <ul>
+            <li><a href="index.html">概要</a></li>
+            <li><a href="setup.html">インストール・初期設定</a></li>
+            <li><a href="login.html">ログイン画面のパターン入力</a></li>
+            <li><a href="admin-initial.html">管理画面：初期設定</a></li>
+            <li><a href="admin.html">管理画面：設定済み</a></li>
+            <li><a href="troubleshooting.html">トラブルシューティング</a></li>
+            <li><a href="glossary.html">用語集</a></li>
+        </ul>
+    </nav>
+
+    <main class="content">
+        <h1>トラブルシューティング</h1>
+        <p class="lead">「パターン欄が出ない」「ログインできない」など、うまくいかないときの確認事項をまとめました。</p>
+
+        <figure class="infographic">
+            <img src="images/infographics/troubleshooting.png" alt="困ったときの切り分け">
+            <figcaption>図: 症状から原因を切り分ける</figcaption>
+        </figure>
+
+        <section>
+            <h2>症状から探す</h2>
+            <table>
+                <thead>
+                    <tr><th>症状</th><th>確認すること</th><th>詳しく</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>ログイン画面にパターン欄が出ない</td><td>パターンが未設定ではないか／プラグインが有効か</td><td><a href="#notshown">詳細</a></td></tr>
+                    <tr><td>正しいはずなのにログインできない</td><td>制限中ではないか／順番や点の数が合っているか</td><td><a href="#locked">詳細</a></td></tr>
+                    <tr><td>パターンを忘れた／管理画面に入れない</td><td>無効化して標準のログインに戻す</td><td><a href="#forgot">詳細</a></td></tr>
+                    <tr><td>パターン欄が操作できない</td><td>JavaScript が有効か</td><td><a href="#nojs">詳細</a></td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section id="notshown">
+            <h2>パターン欄が出ない</h2>
+            <ol class="step">
+                <li>
+                    <div class="step-number">1</div>
+                    <div class="step-content"><p>管理画面の <strong>Kashiwazaki Pattern Lock</strong> を開き、「現在の状態」または初期設定画面が出るか確認します。</p></div>
+                </li>
+                <li>
+                    <div class="step-number">2</div>
+                    <div class="step-content"><p>初期設定画面が出る場合は、まだパターンが設定されていません。パターンを設定すると、ログイン画面に欄が表示されます。</p></div>
+                </li>
+                <li>
+                    <div class="step-number">3</div>
+                    <div class="step-content"><p>管理メニューに項目が無い場合は、プラグインが有効になっているか「プラグイン」一覧で確認します。</p></div>
+                </li>
+            </ol>
+            <div class="callout callout-note">
+                <div class="callout-title">すでにログインしている場合</div>
+                <p>ログイン済みの状態では、ログイン画面は表示されません。一度ログアウトすると確認できます。</p>
+            </div>
+        </section>
+
+        <section id="locked">
+            <h2>正しいはずなのにログインできない</h2>
+            <p>画面上部のメッセージを確認してください。</p>
+            <table>
+                <thead>
+                    <tr><th>メッセージ</th><th>意味</th><th>対処</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>ログインを制限しています。…約 N 分後にもう一度お試しください。</td><td>失敗が続き、一時的にログインできません。</td><td>表示された時間が過ぎるまで待ちます。解除の操作はありません。</td></tr>
+                    <tr><td>パターンが正しくありません。…</td><td>パターンが設定と違います。</td><td>選ぶ点・順番を確認して、もう一度入力します。</td></tr>
+                    <tr><td>ユーザー名またはパスワードが違う、というエラー</td><td>ユーザー名かパスワードが違います。</td><td>パターンより先に、ユーザー名・パスワードを確認します。</td></tr>
+                </tbody>
+            </table>
+            <div class="callout callout-tip">
+                <div class="callout-title">確認のポイント</div>
+                <ul>
+                    <li>点をなぞる<strong>順番</strong>が決められたとおりか。</li>
+                    <li>飛び越えた点が自動で選ばれていないか（例: 1 から 3 へなぞると 2 も選ばれます）。</li>
+                    <li>4点以上あるか。</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="forgot">
+            <h2>パターンを忘れた・管理画面に入れない</h2>
+            <p>パターンを忘れると、管理画面にも入れなくなります。その場合は、プラグインを無効化して標準のログインに戻します。<strong>サーバーのファイル管理画面（FTP クライアントなど）</strong>で、次の作業をしてください。</p>
+
+            <ol class="step">
+                <li>
+                    <div class="step-number">1</div>
+                    <div class="step-content"><p><strong>wp-content/plugins/</strong> を開きます。</p></div>
+                </li>
+                <li>
+                    <div class="step-number">2</div>
+                    <div class="step-content"><p><strong>wp-plugin-kashiwazaki-pattern-lock</strong> フォルダーの名前を、<strong>wp-plugin-kashiwazaki-pattern-lock.disabled</strong> などに変更します。</p></div>
+                </li>
+                <li>
+                    <div class="step-number">3</div>
+                    <div class="step-content"><p>WordPress がこのプラグインを自動的に無効化し、標準のユーザー名・パスワードだけでログインできる状態に戻ります。</p></div>
+                </li>
+                <li>
+                    <div class="step-number">4</div>
+                    <div class="step-content"><p>ログイン後、フォルダー名を元に戻して再度有効化し、管理画面でパターンを設定し直してください。</p></div>
+                </li>
+            </ol>
+
+            <div class="callout callout-warning">
+                <div class="callout-title">フォルダーを削除した場合</div>
+                <p>フォルダーを削除しただけでは設定が残ることがあります。再インストールすると、以前のパターンがそのまま戻ることがあります。作り直す場合は、管理画面の「プラグイン」一覧から削除してください。</p>
+            </div>
+
+            <div class="callout callout-note">
+                <div class="callout-title">失敗が続いて制限されている場合</div>
+                <p>制限中は、正しいパターンを入力してもログインできません。設定した時間（既定 15 分）が過ぎるまで待つか、上の手順で無効化してください。</p>
+            </div>
+        </section>
+
+        <section id="nojs">
+            <h2>パターン欄が操作できない</h2>
+            <p>パターンの入力には JavaScript が必要です。ブラウザーの設定で JavaScript を有効にしてください。無効のままだと、パターンを入力できずログインできません。画面にはその旨の案内が表示されます。</p>
+        </section>
+
+        <section>
+            <h2>よくある質問</h2>
+
+            <h3>パターンを変えたい</h3>
+            <p>管理画面の「パターンの変更」から変更できます。変更すると全ユーザーが新しいパターンを使うことになるため、利用者への案内が必要です。</p>
+
+            <h3>設定したパターンはどこで確認できますか</h3>
+            <p>パターンの内容は表示されません。「現在の状態」で、設定済みかどうかと点の数だけ確認できます。忘れた場合は設定し直してください。</p>
+
+            <h3>何点にすればよいですか</h3>
+            <p>4点以上が設定できます。6点以上をおすすめします。点が多いほど、第三者が言い当てにくくなります。</p>
+
+            <h3>パターンをやめたい</h3>
+            <p>管理画面の「パターンの解除」で解除できます。全ユーザーのログインが、パターン不要の状態に戻ります。</p>
+
+            <h3>アプリや外部サービスからはパターンが必要ですか</h3>
+            <p>いいえ。パターンが求められるのは WordPress 標準のログイン画面だけです。アプリ・外部サービスからの接続などは対象外です。</p>
+
+            <h3>プラグインを無効化するとどうなりますか</h3>
+            <p>パターン入力欄が消え、標準のユーザー名・パスワードだけでログインできる状態に戻ります。設定内容は残るため、再度有効化すると元のパターンが使われます。</p>
+
+            <h3>複数のユーザーで別々のパターンにできますか</h3>
+            <p>できません。パターンはサイト共通で1つです。すべての利用者が同じパターンを使います。</p>
+        </section>
+
+        <nav class="page-nav">
+            <a href="admin.html" class="prev">&laquo; 管理画面：設定済み</a>
+            <a href="glossary.html" class="next">用語集 &raquo;</a>
+        </nav>
+
+        <footer class="manual-footer">
+            <p>作者: <a href="https://www.tsuyoshikashiwazaki.jp/profile/" target="_blank" rel="noopener">柏崎剛 (Tsuyoshi Kashiwazaki)</a></p>
+            <p>プラグイン: Kashiwazaki Pattern Lock v1.0.0 | <a href="https://www.tsuyoshikashiwazaki.jp" target="_blank" rel="noopener">公式サイト</a></p>
+        </footer>
+    </main>
+
+    <div class="lightbox"></div>
+    <script src="js/manual.js"></script>
+</body>
+</html>
