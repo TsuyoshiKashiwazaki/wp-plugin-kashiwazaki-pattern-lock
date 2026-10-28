@@ -203,15 +203,14 @@ function kashiwazaki_pattern_lock_handle_save_settings() {
 		kashiwazaki_pattern_lock_redirect_with_notice( 'settings_invalid' );
 	}
 
-	$settings = kashiwazaki_pattern_lock_get_settings();
+	// パターンの設定とは別の option に書く（同時に別の保存があっても、お互いの値を巻き戻さない）。
+	// チェックが付いていなければ、フォームには値が届かない（オフ）。
+	$trust_cloudflare = ! empty( $_POST['kashiwazaki_pattern_lock_trust_cloudflare'] ) ? 1 : 0;
 
-	$settings['max_attempts']    = $attempts;
-	$settings['lockout_minutes'] = $minutes;
-
-	kashiwazaki_pattern_lock_update_settings( $settings );
+	kashiwazaki_pattern_lock_update_limits( $attempts, $minutes, (bool) $trust_cloudflare );
 
 	$stored = kashiwazaki_pattern_lock_get_settings();
-	if ( (int) $stored['max_attempts'] !== $attempts || (int) $stored['lockout_minutes'] !== $minutes ) {
+	if ( (int) $stored['max_attempts'] !== $attempts || (int) $stored['lockout_minutes'] !== $minutes || (int) $stored['trust_cloudflare'] !== $trust_cloudflare ) {
 		kashiwazaki_pattern_lock_redirect_with_notice( 'settings_failed' );
 	}
 
@@ -287,6 +286,81 @@ function kashiwazaki_pattern_lock_maybe_show_setup_notice() {
 	<?php
 }
 add_action( 'admin_notices', 'kashiwazaki_pattern_lock_maybe_show_setup_notice' );
+
+/**
+ * 失敗回数のテーブルが無い状態かどうか（この要求での確認結果）を覚える・返す。
+ *
+ * @param bool|null $set 確認結果を記録するときだけ渡す（true = テーブルが無い）。
+ * @return bool
+ */
+function kashiwazaki_pattern_lock_storage_missing( $set = null ) {
+	static $missing = false;
+
+	if ( null !== $set ) {
+		$missing = (bool) $set;
+	}
+
+	return $missing;
+}
+
+/**
+ * 管理者の画面で、失敗回数のテーブルの有無を確認する（画面の描画の前）。
+ *
+ * テーブルが無いとログイン制限が働かないため、管理者にだけ警告を出す。
+ * 作り直しを試みるのは、プラグインの設定画面を開いたときだけ（通常ページ・ほかの管理画面では試みない）。
+ * 描画の前（admin_init）で行うので、作れれば同じ画面の警告も出ない。
+ *
+ * @return void
+ */
+function kashiwazaki_pattern_lock_check_storage_in_admin() {
+	if ( wp_doing_ajax() || wp_doing_cron() || ! current_user_can( 'manage_options' ) ) {
+		return;
+	}
+
+	$exists = kashiwazaki_pattern_lock_table_exists();
+
+	$page = isset( $_GET['page'] ) ? sanitize_key( wp_unslash( $_GET['page'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- 表示する画面の判定だけで、状態は変えない。
+	if ( ! $exists && KASHIWASAKI_PATTERN_LOCK_MENU_SLUG === $page ) {
+		kashiwazaki_pattern_lock_install_storage();
+		$exists = kashiwazaki_pattern_lock_table_exists();
+	}
+
+	kashiwazaki_pattern_lock_storage_missing( ! $exists );
+}
+add_action( 'admin_init', 'kashiwazaki_pattern_lock_check_storage_in_admin' );
+
+/**
+ * 失敗回数のテーブルが無いときに、管理者へ警告を出す。
+ *
+ * @return void
+ */
+function kashiwazaki_pattern_lock_maybe_show_storage_notice() {
+	if ( ! kashiwazaki_pattern_lock_storage_missing() || ! current_user_can( 'manage_options' ) ) {
+		return;
+	}
+
+	$url = admin_url( 'admin.php?page=' . KASHIWASAKI_PATTERN_LOCK_MENU_SLUG );
+	?>
+	<div class="notice notice-error">
+		<p>
+			<?php
+			echo wp_kses(
+				sprintf(
+					/* translators: %s: settings page URL. */
+					__( '<strong>Kashiwazaki Pattern Lock:</strong> ログイン制限に使うテーブルがありません。このままでは、ログインに失敗しても回数が数えられず、ログイン制限が働きません（パターンの確認は働きます）。データベースの利用者にテーブルを作る権限（CREATE）があるかを確認し、<a href="%s">設定画面</a>を開き直してください。', KASHIWASAKI_PATTERN_LOCK_TEXTDOMAIN ),
+					esc_url( $url )
+				),
+				array(
+					'strong' => array(),
+					'a'      => array( 'href' => array() ),
+				)
+			);
+			?>
+		</p>
+	</div>
+	<?php
+}
+add_action( 'admin_notices', 'kashiwazaki_pattern_lock_maybe_show_storage_notice' );
 
 /**
  * 結果の通知コードに対応する文言を返す。
@@ -684,6 +758,56 @@ function kashiwazaki_pattern_lock_render_management_screen( $settings, $notice, 
 										</p>
 									</td>
 								</tr>
+								<tr>
+									<th scope="row">
+										<?php echo esc_html__( 'Cloudflare 経由のとき', KASHIWASAKI_PATTERN_LOCK_TEXTDOMAIN ); ?>
+									</th>
+									<td>
+										<label for="kashiwazaki-pattern-lock-trust-cloudflare">
+											<input
+												type="checkbox"
+												id="kashiwazaki-pattern-lock-trust-cloudflare"
+												name="kashiwazaki_pattern_lock_trust_cloudflare"
+												value="1"
+												<?php checked( ! empty( $settings['trust_cloudflare'] ) ); ?>
+											/>
+											<?php echo esc_html__( '本当の接続元の IP アドレスを使う', KASHIWASAKI_PATTERN_LOCK_TEXTDOMAIN ); ?>
+										</label>
+										<p class="description">
+											<?php echo esc_html__( 'Cloudflare 経由のとき、訪問者の本当の IP アドレスで失敗を数えます。IP アドレスの範囲は、Cloudflare の公式 API（api.cloudflare.com）から 1 日 1 回、自動で取得します（サイトの情報は送りません）。', KASHIWASAKI_PATTERN_LOCK_TEXTDOMAIN ); ?>
+										</p>
+										<p class="description">
+											<?php
+											$kpl_cf_status = kashiwazaki_pattern_lock_cloudflare_status();
+											$kpl_cf_info   = kashiwazaki_pattern_lock_cloudflare_ranges_info();
+											$kpl_cf_reasons = array(
+												'request' => __( '通信できません。外部への HTTP 通信を禁止する設定ではありませんか', KASHIWASAKI_PATTERN_LOCK_TEXTDOMAIN ),
+												'status'  => __( '公式 API が成功以外の応答を返しました', KASHIWASAKI_PATTERN_LOCK_TEXTDOMAIN ),
+												'format'  => __( '公式 API の応答が想定と違いました', KASHIWASAKI_PATTERN_LOCK_TEXTDOMAIN ),
+												'invalid' => __( '公式 API の応答に使えない範囲がありました', KASHIWASAKI_PATTERN_LOCK_TEXTDOMAIN ),
+												'save'    => __( 'データベースに保存できませんでした', KASHIWASAKI_PATTERN_LOCK_TEXTDOMAIN ),
+											);
+											if ( 'via' === $kpl_cf_status ) {
+												$kpl_access = __( 'Cloudflare 経由です', KASHIWASAKI_PATTERN_LOCK_TEXTDOMAIN );
+											} elseif ( 'outside' === $kpl_cf_status ) {
+												$kpl_access = __( 'Cloudflare 経由ではありません（Cloudflare のヘッダーは届いていますが、接続元が範囲の外です）', KASHIWASAKI_PATTERN_LOCK_TEXTDOMAIN );
+											} else {
+												$kpl_access = __( 'Cloudflare 経由ではありません', KASHIWASAKI_PATTERN_LOCK_TEXTDOMAIN );
+											}
+											if ( 'api' === $kpl_cf_info['source'] ) {
+												/* translators: %s: date and time. */
+												$kpl_range = sprintf( __( '公式 API から取得（最終更新: %s）', KASHIWASAKI_PATTERN_LOCK_TEXTDOMAIN ), wp_date( 'Y-m-d H:i', $kpl_cf_info['fetched_at'] ) );
+											} elseif ( $kpl_cf_info['checked_at'] > 0 && '' !== $kpl_cf_info['error'] ) {
+												/* translators: %s: reason. */
+												$kpl_range = sprintf( __( '内蔵の一覧（自動取得に失敗: %s）', KASHIWASAKI_PATTERN_LOCK_TEXTDOMAIN ), isset( $kpl_cf_reasons[ $kpl_cf_info['error'] ] ) ? $kpl_cf_reasons[ $kpl_cf_info['error'] ] : $kpl_cf_info['error'] );
+											} else {
+												$kpl_range = __( '内蔵の一覧（自動取得は未実施）', KASHIWASAKI_PATTERN_LOCK_TEXTDOMAIN );
+											}
+											echo esc_html( sprintf( /* translators: 1: access state, 2: range source. */ __( 'いまのアクセス: %1$s ／ IP アドレスの範囲: %2$s', KASHIWASAKI_PATTERN_LOCK_TEXTDOMAIN ), $kpl_access, $kpl_range ) );
+											?>
+										</p>
+									</td>
+								</tr>
 							</tbody>
 						</table>
 					</div>
@@ -729,6 +853,7 @@ function kashiwazaki_pattern_lock_render_management_screen( $settings, $notice, 
 						<li><?php echo esc_html__( 'パターン認証が働くのは WordPress 標準のログイン画面（wp-login.php）だけです。', KASHIWASAKI_PATTERN_LOCK_TEXTDOMAIN ); ?></li>
 						<li><?php echo esc_html__( 'REST API・アプリケーションパスワード・XML-RPC はパターンの対象外で、これまでどおりユーザー名とパスワードだけで認証されます。', KASHIWASAKI_PATTERN_LOCK_TEXTDOMAIN ); ?></li>
 						<li><?php echo esc_html__( 'ログイン済みの Cookie はパターンの対象外です。すでにログインしている利用者はそのまま操作できます。', KASHIWASAKI_PATTERN_LOCK_TEXTDOMAIN ); ?></li>
+						<li><?php echo esc_html__( 'ログイン制限は、接続元の IP アドレス（サーバーが申告する REMOTE_ADDR）で数えます。Cloudflare の背後では、本当の接続元の IP アドレスを自動で使います（Cloudflare の IP アドレスの範囲は、公式 API から 1 日 1 回、自動で取得します。上の「ログイン制限の設定」で止められます）。それ以外のリバースプロキシや CDN の背後では全員が同じ IP アドレスに見え、1 人の失敗が全員のログイン制限になります。その場合は、フィルター kashiwazaki_pattern_lock_client_ip で、信頼できる経路の本当の IP アドレスを返してください（設定例は README.md を参照）。', KASHIWASAKI_PATTERN_LOCK_TEXTDOMAIN ); ?></li>
 						<li><?php echo esc_html__( 'パターンを忘れた場合や設定を誤った場合は、FTP などでプラグインのフォルダ名を変更して無効化してください。詳しくは README.md を参照してください。', KASHIWASAKI_PATTERN_LOCK_TEXTDOMAIN ); ?></li>
 					</ul>
 				</div>

@@ -11,7 +11,7 @@
     <nav class="sidebar">
         <div class="sidebar-header">
             <h2 style="color:#fff;">Kashiwazaki Pattern Lock</h2>
-            <span class="version">v1.0.0</span>
+            <span class="version">v1.0.1</span>
             <img src="images/main-visual.png" alt="" style="width:100%;border-radius:4px;margin-top:8px;">
         </div>
         <ul>
@@ -45,6 +45,7 @@
                     <tr><td>正しいはずなのにログインできない</td><td>制限中ではないか／順番や点の数が合っているか</td><td><a href="#locked">詳細</a></td></tr>
                     <tr><td>パターンを忘れた／管理画面に入れない</td><td>無効化して標準のログインに戻す</td><td><a href="#forgot">詳細</a></td></tr>
                     <tr><td>パターン欄が操作できない</td><td>JavaScript が有効か</td><td><a href="#nojs">詳細</a></td></tr>
+                    <tr><td>管理者を含む全員が、同時にログインを制限される</td><td>Cloudflare 以外のリバースプロキシ・CDN の背後で、全員が同じ IP アドレスに見えていないか</td><td><a href="#proxy">詳細</a></td></tr>
                 </tbody>
             </table>
         </section>
@@ -92,6 +93,12 @@
                     <li>4点以上あるか。</li>
                 </ul>
             </div>
+        </section>
+
+        <section id="proxy">
+            <h2>全員が同時にログインを制限される（Cloudflare 以外のリバースプロキシ・CDN の背後）</h2>
+            <p>ログイン制限は、接続元の IP アドレスごとに失敗を数えます。<strong>Cloudflare の背後では、本当の接続元の IP アドレスを使うので、この問題は起きません。</strong>管理画面の「ログイン制限の設定」にある「Cloudflare 経由のとき、本当の接続元の IP アドレスを使う」が<strong>オン</strong>になっているかを確かめてください（既定はオンです）。それ以外のリバースプロキシや CDN の背後では、全員が同じ IP アドレスに見えるため、誰か 1 人が失敗を重ねる（既定では 50 回）だけで、同じ経路の全員が一定時間ログインできなくなります。</p>
+            <p>対処は、フィルター <code>kashiwazaki_pattern_lock_client_ip</code> で、信頼できる経路の本当の IP アドレスを返すことです。設定例と注意点は、README.md の「リバースプロキシ・CDN の背後で使うとき」にあります。制限は時間が過ぎれば解除されます。すぐに入りたいときは、プラグインのフォルダー名を変えて無効化してください（下の「パターンを忘れた」と同じ手順です）。</p>
         </section>
 
         <section id="forgot">
@@ -165,7 +172,7 @@
 
         <footer class="manual-footer">
             <p>作者: <a href="https://www.tsuyoshikashiwazaki.jp/profile/" target="_blank" rel="noopener">柏崎剛 (Tsuyoshi Kashiwazaki)</a></p>
-            <p>プラグイン: Kashiwazaki Pattern Lock v1.0.0 | <a href="https://www.tsuyoshikashiwazaki.jp" target="_blank" rel="noopener">公式サイト</a></p>
+            <p>プラグイン: Kashiwazaki Pattern Lock v1.0.1 | <a href="https://www.tsuyoshikashiwazaki.jp" target="_blank" rel="noopener">公式サイト</a></p>
         </footer>
     </main>
 

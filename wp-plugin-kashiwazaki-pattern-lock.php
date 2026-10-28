@@ -3,7 +3,7 @@
  * Plugin Name: Kashiwazaki Pattern Lock
  * Plugin URI: https://www.tsuyoshikashiwazaki.jp
  * Description: WordPress標準のログイン画面に、9点をなぞるパターンロック認証を追加するプラグインです。
- * Version: 1.0.0
+ * Version: 1.0.1
  * Author: 柏崎剛 (Tsuyoshi Kashiwazaki)
  * Author URI: https://www.tsuyoshikashiwazaki.jp/profile/
  * License: GPL-2.0-or-later
@@ -27,7 +27,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * 名称は省略せず、常に「Kashiwazaki Pattern Lock」と表記する方針のため、
  * 定数・関数の接頭辞も省略形を使わずフル表記にしている。
  */
-define( 'KASHIWASAKI_PATTERN_LOCK_VERSION', '1.0.0' );
+define( 'KASHIWASAKI_PATTERN_LOCK_VERSION', '1.0.1' );
 define( 'KASHIWASAKI_PATTERN_LOCK_FILE', __FILE__ );
 define( 'KASHIWASAKI_PATTERN_LOCK_DIR', plugin_dir_path( __FILE__ ) );
 define( 'KASHIWASAKI_PATTERN_LOCK_URL', plugin_dir_url( __FILE__ ) );
@@ -37,8 +37,18 @@ define( 'KASHIWASAKI_PATTERN_LOCK_BASENAME', plugin_basename( __FILE__ ) );
 define( 'KASHIWASAKI_PATTERN_LOCK_MENU_SLUG', 'kashiwazaki-pattern-lock' );
 define( 'KASHIWASAKI_PATTERN_LOCK_MENU_POSITION', 81 );
 
-/** 設定（wp_options）のキー。 */
+/** 設定（wp_options）のキー。パターンに関する項目を持つ。 */
 define( 'KASHIWASAKI_PATTERN_LOCK_OPTION_KEY', 'kashiwazaki_pattern_lock_settings' );
+
+/** ログイン制限の 2 項目（失敗の上限回数・制限する時間）を持つ option。パターンの保存と同時に書き換わらないよう分けている。 */
+define( 'KASHIWASAKI_PATTERN_LOCK_LIMITS_OPTION_KEY', 'kashiwazaki_pattern_lock_limits' );
+
+/** 失敗回数のテーブルを作れなかったときの印（option）。 */
+define( 'KASHIWASAKI_PATTERN_LOCK_STORAGE_FAILED_KEY', 'kashiwazaki_pattern_lock_storage_failed' );
+
+// 公式 API から取得した Cloudflare の IP アドレスの範囲を保存する option 名と、1 日 1 回の取得の予定の名前。
+define( 'KASHIWASAKI_PATTERN_LOCK_CF_RANGES_KEY', 'kashiwazaki_pattern_lock_cf_ranges' );
+define( 'KASHIWASAKI_PATTERN_LOCK_CF_CRON_HOOK', 'kashiwazaki_pattern_lock_refresh_cf_ranges' );
 
 /** ログイン画面でパターンを受け取る POST フィールド名。 */
 define( 'KASHIWASAKI_PATTERN_LOCK_FORM_FIELD', 'kashiwazaki_pattern_lock_pattern' );
@@ -105,8 +115,19 @@ function kashiwazaki_pattern_lock_activate() {
 	set_transient( 'kashiwazaki_pattern_lock_activation_redirect', 1, 60 );
 
 	kashiwazaki_pattern_lock_install_storage();
+	kashiwazaki_pattern_lock_schedule_cloudflare_refresh();
 }
 register_activation_hook( __FILE__, 'kashiwazaki_pattern_lock_activate' );
+
+/**
+ * 無効化時の処理。Cloudflare の IP アドレスの範囲を取得する予定を外す。
+ *
+ * @return void
+ */
+function kashiwazaki_pattern_lock_deactivate() {
+	wp_clear_scheduled_hook( KASHIWASAKI_PATTERN_LOCK_CF_CRON_HOOK );
+}
+register_deactivation_hook( __FILE__, 'kashiwazaki_pattern_lock_deactivate' );
 
 /**
  * 有効化した直後の管理画面で、初期設定画面へ案内する。

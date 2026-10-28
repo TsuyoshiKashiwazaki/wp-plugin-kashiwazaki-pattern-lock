@@ -21,7 +21,11 @@ function kashiwazaki_pattern_lock_uninstall_site() {
 	global $wpdb;
 
 	delete_option( 'kashiwazaki_pattern_lock_settings' );
+	delete_option( 'kashiwazaki_pattern_lock_limits' );
+	delete_option( 'kashiwazaki_pattern_lock_storage_failed' );
 	delete_option( 'kashiwazaki_pattern_lock_db_version' );
+	delete_option( 'kashiwazaki_pattern_lock_cf_ranges' );
+	wp_clear_scheduled_hook( 'kashiwazaki_pattern_lock_refresh_cf_ranges' );
 	delete_transient( 'kashiwazaki_pattern_lock_activation_redirect' );
 
 	// 失敗回数のテーブル（現在の保存先）。

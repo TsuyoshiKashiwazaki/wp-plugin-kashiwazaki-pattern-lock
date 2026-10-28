@@ -15,14 +15,19 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * いま処理しているのが標準ログイン画面からのログイン要求かどうか。
  *
- * 判定は「除外リスト方式」にしている。wp-login.php は未知の action を
- * `case 'login': default:` で通常ログインとして処理するため、
- * 「action が login のときだけ対象」にすると、未定義の action を付けた
- * POST でパターン検証を丸ごと回避できてしまう（2026-10-27 に実測）。
+ * 判定に `action` の値は使わない。WordPress 本体は action を未加工のまま比べて分岐し、
+ * 一覧に無い値（`LOGOUT`・`lo!gout`・未定義の値など）は通常ログインとして処理する
+ * （wp-login.php の `$default_actions` と `has_filter( 'login_form_' . $action )` の判定）。
+ * こちらで action を加工して一覧と比べると、本体とこちらの判断がずれて、
+ * 本体がログインとして処理する要求でパターン検証が丸ごと飛ばされる（2026-10-28 に実測）。
+ *
+ * WordPress 本体が wp-login.php の中で `authenticate` を呼ぶのは、通常ログインの処理
+ * （`wp_signon()`）のときだけで、パスワード再設定・登録・ログアウトなどでは呼ばない
+ * （2026-10-28 に全 action を実測）。そのため「wp-login.php を処理中」であれば、
+ * `authenticate` が呼ばれた時点でログインとして扱ってよい。
  *
  * 次のいずれかに当てはまる場合だけ対象外とする。
  * - wp-login.php 以外（REST API・XML-RPC・wp-cli・管理画面の Ajax など）
- * - wp-login.php のログイン以外の action（パスワード再設定・登録・ログアウトなど）
  *
  * @return bool
  */
@@ -36,27 +41,7 @@ function kashiwazaki_pattern_lock_is_standard_login_request() {
 	}
 
 	// wp-login.php の読み込み時にだけ発火するアクション。ここが無ければ標準ログイン画面ではない。
-	if ( ! did_action( 'login_init' ) ) {
-		return false;
-	}
-
-	$action = isset( $_REQUEST['action'] ) ? sanitize_key( wp_unslash( $_REQUEST['action'] ) ) : '';
-
-	// wp-login.php が「ログイン以外」として分岐する action の一覧（wp-login.php の case と対応）。
-	$non_login_actions = array(
-		'confirm_admin_email',
-		'postpass',
-		'logout',
-		'lostpassword',
-		'retrievepassword',
-		'resetpass',
-		'rp',
-		'register',
-		'checkemail',
-		'confirmaction',
-	);
-
-	return ! in_array( $action, $non_login_actions, true );
+	return (bool) did_action( 'login_init' );
 }
 
 /**

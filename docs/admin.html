@@ -11,7 +11,7 @@
     <nav class="sidebar">
         <div class="sidebar-header">
             <h2 style="color:#fff;">Kashiwazaki Pattern Lock</h2>
-            <span class="version">v1.0.0</span>
+            <span class="version">v1.0.1</span>
             <img src="images/main-visual.png" alt="" style="width:100%;border-radius:4px;margin-top:8px;">
         </div>
         <ul>
@@ -124,10 +124,19 @@
                 <tbody>
                     <tr><td>連続失敗の上限回数</td><td>同じ IP アドレスとユーザー名の組み合わせで、この回数だけ認証に失敗するとログインを制限します。</td><td>5</td><td>1〜20</td></tr>
                     <tr><td>制限する時間（分）</td><td>上限に達したあと、この時間が経つまでログインを受け付けません。</td><td>15</td><td>1〜1440（24時間）</td></tr>
+                    <tr><td>Cloudflare 経由のとき、本当の接続元の IP アドレスを使う</td><td>Cloudflare の IP アドレスの範囲から届いた通信に限り、Cloudflare が付ける本当の接続元の IP アドレス（CF-Connecting-IP）でログインの失敗を数えます。Cloudflare を使っていないサイトでは何も変わりません。オフにすると、サーバーが申告する IP アドレスだけを使います。パネルには「いまのアクセス」の状態（Cloudflare 経由か、そうでないか）と、Cloudflare の IP アドレスの範囲の取得元・最終更新も表示されます。</td><td>オン</td><td>オン・オフ</td></tr>
                 </tbody>
             </table>
 
             <p><strong>ログイン制限を保存</strong> を押すと設定が保存され、画面上部に「ログイン制限を保存しました。同じ IP アドレスとユーザー名の組み合わせで N 回失敗すると、N 分間ログインを制限します。」と表示されます。</p>
+
+            <h3>Cloudflare の IP アドレスの範囲の自動取得</h3>
+            <ul>
+                <li>「Cloudflare 経由のとき、本当の接続元の IP アドレスを使う」が<strong>オン</strong>のあいだ、Cloudflare の IP アドレスの範囲を、Cloudflare の公式 API（<code>api.cloudflare.com</code>）から<strong>1 日 1 回</strong>自動で取得します。サイトの情報（URL・ユーザー名・IP アドレスなど）は送りません。</li>
+                <li>取得した内容は、形式と広さを検査してから使います。不正な内容は使わず、前の一覧を残します。</li>
+                <li>取得できないときや、取得から 45 日以上たったときは、プラグインに内蔵した一覧（2026-10-28 に取得したもの）を使います。パネルに、取得元と最終更新（失敗したときは理由）が表示されます。</li>
+                <li>チェックを<strong>オフ</strong>にすると、取得しません。</li>
+            </ul>
 
             <h3>制限のしくみ</h3>
             <ul>
@@ -186,6 +195,7 @@
                 <li>パターン認証が働くのは、WordPress 標準のログイン画面だけです。</li>
                 <li>REST API・アプリケーションパスワード・XML-RPC は対象外で、これまでどおりユーザー名とパスワードだけで認証されます。</li>
                 <li>ログイン済みの Cookie は対象外です。すでにログインしている利用者はそのまま操作できます。</li>
+                <li>ログイン制限は、接続元の IP アドレス（サーバーが申告する REMOTE_ADDR）で数えます。Cloudflare の背後では、本当の接続元の IP アドレスを自動で使います（「ログイン制限の設定」のチェックで止められます）。それ以外のリバースプロキシや CDN の背後では全員が同じ IP アドレスに見え、1 人の失敗が全員のログイン制限になります。その場合は、フィルター <code>kashiwazaki_pattern_lock_client_ip</code> で、信頼できる経路の本当の IP アドレスを返してください（設定例は README.md の「リバースプロキシ・CDN の背後で使うとき」にあります）。</li>
                 <li>パターンを忘れた場合や設定を誤った場合は、プラグインのフォルダー名を変えて無効化してください。くわしくは<a href="troubleshooting.html#forgot">トラブルシューティング</a>をご覧ください。</li>
             </ul>
 
@@ -211,6 +221,7 @@
                     <tr><td>パターンを保存できませんでした。もう一度お試しください。</td><td>保存に失敗しました。</td></tr>
                     <tr><td>パターンを解除できませんでした。もう一度お試しください。</td><td>解除に失敗しました。</td></tr>
                     <tr><td>ログイン制限の設定を保存できませんでした。もう一度お試しください。</td><td>設定の保存に失敗しました。</td></tr>
+                    <tr><td>Kashiwazaki Pattern Lock: ログイン制限に使うテーブルがありません。…</td><td>失敗回数を記録するテーブルがありません（赤い警告として管理画面の上部に出ます）。このままでは、ログインに失敗しても回数が数えられず、ログイン制限が働きません。パターンの確認は働きます。データベースの利用者にテーブルを作る権限（CREATE）があるかを確認し、この設定画面を開き直してください。作成できると警告は消えます。</td></tr>
                 </tbody>
             </table>
         </section>
@@ -222,7 +233,7 @@
 
         <footer class="manual-footer">
             <p>作者: <a href="https://www.tsuyoshikashiwazaki.jp/profile/" target="_blank" rel="noopener">柏崎剛 (Tsuyoshi Kashiwazaki)</a></p>
-            <p>プラグイン: Kashiwazaki Pattern Lock v1.0.0 | <a href="https://www.tsuyoshikashiwazaki.jp" target="_blank" rel="noopener">公式サイト</a></p>
+            <p>プラグイン: Kashiwazaki Pattern Lock v1.0.1 | <a href="https://www.tsuyoshikashiwazaki.jp" target="_blank" rel="noopener">公式サイト</a></p>
         </footer>
     </main>
 

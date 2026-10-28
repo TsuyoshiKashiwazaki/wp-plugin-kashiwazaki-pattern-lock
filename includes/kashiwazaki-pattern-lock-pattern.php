@@ -25,6 +25,7 @@ function kashiwazaki_pattern_lock_get_default_settings() {
 		'pattern_set_by'  => 0,
 		'max_attempts'    => KASHIWASAKI_PATTERN_LOCK_DEFAULT_MAX_ATTEMPTS,
 		'lockout_minutes' => KASHIWASAKI_PATTERN_LOCK_DEFAULT_LOCKOUT_MINUTES,
+		'trust_cloudflare' => 1,
 	);
 }
 
@@ -41,7 +42,11 @@ function kashiwazaki_pattern_lock_get_settings() {
 		$stored = array();
 	}
 
-	$settings = wp_parse_args( $stored, kashiwazaki_pattern_lock_get_default_settings() );
+	// ログイン制限の 2 項目は別の option に持つ。無ければ設定 option の旧キー（v1.0.0 の保存形）を読む。
+	$limits = get_option( KASHIWASAKI_PATTERN_LOCK_LIMITS_OPTION_KEY, array() );
+	$limits = is_array( $limits ) ? array_intersect_key( $limits, array( 'max_attempts' => 1, 'lockout_minutes' => 1, 'trust_cloudflare' => 1 ) ) : array();
+
+	$settings = wp_parse_args( $limits, wp_parse_args( $stored, kashiwazaki_pattern_lock_get_default_settings() ) );
 
 	$settings['pattern_hash']    = is_string( $settings['pattern_hash'] ) ? $settings['pattern_hash'] : '';
 	$settings['pattern_dots']    = max( 0, (int) $settings['pattern_dots'] );
@@ -55,20 +60,56 @@ function kashiwazaki_pattern_lock_get_settings() {
 		KASHIWASAKI_PATTERN_LOCK_MAX_LOCKOUT_MINUTES,
 		max( 1, (int) $settings['lockout_minutes'] )
 	);
+	$settings['trust_cloudflare'] = empty( $settings['trust_cloudflare'] ) ? 0 : 1;
 
 	return $settings;
 }
 
 /**
- * 設定を保存する。
+ * パターンに関する設定を保存する。
  *
- * @param array $settings 保存する設定（欠けている項目は既定値で補う）。
+ * 書くのはパターンの 4 項目（pattern_hash・pattern_dots・pattern_set_at・pattern_set_by）だけ。
+ * 設定 option のほかのキー（v1.0.0 が保存した制限のキー）には触れない。
+ * ログイン制限の 2 項目は kashiwazaki_pattern_lock_update_limits() で別の option に書くので、
+ * 制限の保存とパターンの保存が重なっても、お互いの値を古い読み出しで書き戻すことはない。
+ *
+ * @param array $settings 保存する設定（パターンの 4 項目だけを使う）。
  * @return bool
  */
 function kashiwazaki_pattern_lock_update_settings( $settings ) {
-	$settings = wp_parse_args( (array) $settings, kashiwazaki_pattern_lock_get_default_settings() );
+	$raw = get_option( KASHIWASAKI_PATTERN_LOCK_OPTION_KEY, array() );
+	if ( ! is_array( $raw ) ) {
+		$raw = array();
+	}
 
-	return update_option( KASHIWASAKI_PATTERN_LOCK_OPTION_KEY, $settings, false );
+	$defaults = kashiwazaki_pattern_lock_get_default_settings();
+	foreach ( array( 'pattern_hash', 'pattern_dots', 'pattern_set_at', 'pattern_set_by' ) as $key ) {
+		$raw[ $key ] = isset( $settings[ $key ] ) ? $settings[ $key ] : $defaults[ $key ];
+	}
+
+	return update_option( KASHIWASAKI_PATTERN_LOCK_OPTION_KEY, $raw, false );
+}
+
+/**
+ * ログイン制限の設定（失敗の上限回数・制限する時間・Cloudflare 経由のときの扱い）を保存する。
+ *
+ * パターンの設定とは別の option に書く。
+ *
+ * @param int $attempts 失敗の上限回数。
+ * @param int $minutes  制限する時間（分）。
+ * @param bool $trust_cloudflare Cloudflare 経由のとき、本当の接続元の IP アドレスを使うか（既定: true）。
+ * @return bool
+ */
+function kashiwazaki_pattern_lock_update_limits( $attempts, $minutes, $trust_cloudflare = true ) {
+	return update_option(
+		KASHIWASAKI_PATTERN_LOCK_LIMITS_OPTION_KEY,
+		array(
+			'max_attempts'    => (int) $attempts,
+			'lockout_minutes' => (int) $minutes,
+			'trust_cloudflare' => $trust_cloudflare ? 1 : 0,
+		),
+		false
+	);
 }
 
 /**

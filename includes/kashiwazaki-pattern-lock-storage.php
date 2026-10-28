@@ -24,9 +24,30 @@ function kashiwazaki_pattern_lock_get_attempt_table() {
 }
 
 /**
- * テーブルを作る（有効化時と、定義が変わったときだけ）。
+ * 失敗回数のテーブルが実在するか。
  *
- * @return void
+ * @return bool
+ */
+function kashiwazaki_pattern_lock_table_exists() {
+	global $wpdb;
+
+	$table = kashiwazaki_pattern_lock_get_attempt_table();
+
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+	$found = $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->esc_like( $table ) ) );
+
+	return ( $table === $found );
+}
+
+/**
+ * テーブルを作る（有効化時と、定義が変わったとき、設定画面での再試行）。
+ *
+ * dbDelta() の結果は戻り値では分からないため、作ったあとにテーブルの実在を確かめる。
+ * 実在したときだけ db_version を保存する。作れなかったときは db_version を消し、
+ * 失敗の印（option）を DB に残して、全要求が毎回作り直しを試みないようにする。
+ * 印は transient ではなく通常の option にしている（transient は期限前に消えうるため）。
+ *
+ * @return bool 実在を確かめられたら true。
  */
 function kashiwazaki_pattern_lock_install_storage() {
 	global $wpdb;
@@ -47,17 +68,36 @@ function kashiwazaki_pattern_lock_install_storage() {
 
 	dbDelta( $sql );
 
-	update_option( 'kashiwazaki_pattern_lock_db_version', KASHIWASAKI_PATTERN_LOCK_DB_VERSION, false );
+	if ( kashiwazaki_pattern_lock_table_exists() ) {
+		update_option( 'kashiwazaki_pattern_lock_db_version', KASHIWASAKI_PATTERN_LOCK_DB_VERSION, false );
+		delete_option( KASHIWASAKI_PATTERN_LOCK_STORAGE_FAILED_KEY );
+
+		return true;
+	}
+
+	delete_option( 'kashiwazaki_pattern_lock_db_version' );
+	update_option( KASHIWASAKI_PATTERN_LOCK_STORAGE_FAILED_KEY, time(), true );
+
+	return false;
 }
 
 /**
- * テーブルが無い・古い場合に作り直す。
+ * テーブルの定義が古い・まだ無い場合に作る。
+ *
+ * 失敗の印があるときは何もしない（作れない環境で、全要求が毎回 dbDelta() を流さないため）。
+ * 印が立っているあいだの再試行は、管理者がプラグインの設定画面を開いたときだけ行う。
  *
  * @return void
  */
 function kashiwazaki_pattern_lock_maybe_install_storage() {
-	if ( get_option( 'kashiwazaki_pattern_lock_db_version' ) !== KASHIWASAKI_PATTERN_LOCK_DB_VERSION ) {
-		kashiwazaki_pattern_lock_install_storage();
+	if ( get_option( 'kashiwazaki_pattern_lock_db_version' ) === KASHIWASAKI_PATTERN_LOCK_DB_VERSION ) {
+		return;
 	}
+
+	if ( get_option( KASHIWASAKI_PATTERN_LOCK_STORAGE_FAILED_KEY ) ) {
+		return;
+	}
+
+	kashiwazaki_pattern_lock_install_storage();
 }
 add_action( 'plugins_loaded', 'kashiwazaki_pattern_lock_maybe_install_storage' );

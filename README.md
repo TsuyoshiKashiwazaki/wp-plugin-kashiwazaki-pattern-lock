@@ -3,12 +3,12 @@
 ![WordPress](https://img.shields.io/badge/WordPress-6.0%2B-blue.svg)
 ![PHP](https://img.shields.io/badge/PHP-7.4%2B-purple.svg)
 ![License](https://img.shields.io/badge/License-GPL--2.0--or--later-green.svg)
-![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
+![Version](https://img.shields.io/badge/version-1.0.1-blue.svg)
 
 WordPress 標準のログイン画面に、9 点をなぞるパターンロック認証を追加するプラグインです。ユーザー名・パスワードに加えて、サイト共通のパターンが一致したときだけログインを許可します。
 
 - Plugin Name: Kashiwazaki Pattern Lock
-- Version: 1.0.0
+- Version: 1.0.1
 - Author: 柏崎剛 (Tsuyoshi Kashiwazaki)
 - Author URI: https://www.tsuyoshikashiwazaki.jp/profile/
 - License: GPL-2.0-or-later
@@ -26,7 +26,7 @@ WordPress 標準のログイン画面に、9 点をなぞるパターンロッ�
 - ユーザー名・パスワード・パターンのすべてが正しいときだけログインを許可します。
 - パターンが未入力・間違いの場合はログインを拒否し、日本語のエラーメッセージを表示します。
 - 連続して認証に失敗すると、一定時間ログインを制限します（回数と時間は管理画面で設定）。
-- パターンは平文で保存せず、WordPress の `wp_hash_password()`（bcrypt）でハッシュ化して保存します。
+- パターンは平文で保存せず、WordPress の `wp_hash_password()` でハッシュ化して保存します（WordPress 6.8 以降は bcrypt、それより前の版は WordPress 標準の phpass）。
 
 ## 2. 設置方法
 
@@ -100,12 +100,50 @@ WordPress 標準のログイン画面に、9 点をなぞるパターンロッ�
 | 保護された投稿のパスワード入力（`action=postpass`） | 対象外 | 投稿のパスワードであり、ログインではありません |
 | 別プラグインが独自に用意したログイン画面・API | 対象外 | その画面が `wp_signon()` を直接呼ぶ場合、パターンは検証されません |
 
+### リバースプロキシ・CDN の背後で使うとき（ログイン制限の IP アドレス）
+
+ログイン制限は、サーバーが申告する接続元の IP アドレス（`REMOTE_ADDR`）で失敗を数えます。リバースプロキシや CDN の背後では、`REMOTE_ADDR` がプロキシの IP アドレスになり、**全員が同じ IP アドレスに見えます**。その状態では、誰か 1 人が失敗を重ねる（既定では 50 回）だけで、同じプロキシ経由の全員（管理者を含む）が一定時間ログインできなくなります。
+
+**Cloudflare は、設定なしで対応しています。** `REMOTE_ADDR` が Cloudflare の IP アドレスの範囲（Cloudflare が公開している一覧）に入っている通信に限り、Cloudflare が付ける本当の接続元の IP アドレス（`CF-Connecting-IP`）を使います。範囲の外から届いた通信のヘッダーは、訪問者が自分で書けるため無視します。Cloudflare の IP アドレスの範囲は、Cloudflare の公式 API から自動で取得します（下の「Cloudflare の IP アドレスの範囲の自動取得」）。取得できないあいだは、プラグインに内蔵した一覧（2026-10-28 に公式の一覧から取得したもの）を使います。範囲の外から届いた通信は `REMOTE_ADDR` のまま扱います（偽装される側には倒れません）。管理画面の「ログイン制限の設定」にある「Cloudflare 経由のとき、本当の接続元の IP アドレスを使う」のチェック（既定はオン）で、切り替えられます。コードで決めたいときは、フィルター `kashiwazaki_pattern_lock_trust_cloudflare` で `true` か `false` を返してください（フィルターの値が、チェックより優先されます）。
+
+#### Cloudflare の IP アドレスの範囲の自動取得
+
+- **取得先**: Cloudflare の公式 API（`https://api.cloudflare.com/client/v4/ips`。認証は不要。[公式の説明](https://developers.cloudflare.com/api/resources/ips/methods/list/)）。
+- **タイミング**: 1 日 1 回、WP-Cron で取得します。ログインの処理の途中で取得することはありません。
+- **送る情報**: ありません（サイトの URL・ユーザー名・IP アドレスなどは送りません。プラグイン名と版だけを User-Agent に付けます）。サービスの[利用規約](https://www.cloudflare.com/website-terms/)・[プライバシーポリシー](https://www.cloudflare.com/privacypolicy/)は Cloudflare のものです。
+- **取得した内容の検査**: 正規の CIDR で、広すぎず（IPv4 は /12 以上、IPv6 は /28 以上）、狭すぎず（IPv4 は /24 まで、IPv6 は /48 まで。1 つの IP アドレスだけの範囲は使いません）、予約された範囲（プライベート・ループバック・ドキュメント用など）と重ならず、重複や重なりがなく、件数が妥当な一覧だけを使います。1 件でも不正なら全部使わず、前の一覧を残します。保存した値も、読むときにもう一度検査します。
+- **この検査の限界**: 危険な形や範囲を除くための検査で、一覧が Cloudflare のものであることの証明ではありません。真正性は、公式 API への HTTPS 接続（証明書の検証）と、サイトのデータベースの保護に依ります。
+- **取得できないとき・古いとき**: 取得に失敗しても、前に取得した一覧（取得から 45 日以内）か、内蔵の一覧を使います。45 日以上更新できないときは、内蔵の一覧に戻ります。管理画面「ログイン制限の設定」に、取得元と最終更新（失敗したときは理由）が出ます。
+- **止めたいとき**: 管理画面の「Cloudflare 経由のとき、本当の接続元の IP アドレスを使う」をオフにすると、取得しません。コードで決めるときは、フィルター `kashiwazaki_pattern_lock_auto_update_cloudflare_ranges` で `false` を返してください。範囲そのものを差し替えるときは、フィルター `kashiwazaki_pattern_lock_cloudflare_ranges` を使います。
+
+**Cloudflare 以外のリバースプロキシ・CDN** の背後では、フィルター `kashiwazaki_pattern_lock_client_ip` で、プロキシが付ける本当の接続元の IP アドレスを返してください。テーマの `functions.php` か、独自のプラグイン（`mu-plugins` など）に書きます。
+
+```php
+// 例: 自分のリバースプロキシの背後（プロキシが付ける X-Real-IP を使う）
+add_filter(
+	'kashiwazaki_pattern_lock_client_ip',
+	function ( $ip ) {
+		if ( ! empty( $_SERVER['HTTP_X_REAL_IP'] ) ) {
+			return trim( wp_unslash( $_SERVER['HTTP_X_REAL_IP'] ) );
+		}
+
+		return $ip;
+	}
+);
+```
+
+- フィルターが返した値が正しい IP アドレス（IPv4・IPv6）の文字列でなければ、使わずに `REMOTE_ADDR` に戻します。
+- 上の例は、**プロキシを通さずにサイトへ直接アクセスできない構成**（プロキシ以外からの接続を遮断している）が前提です。直接アクセスできる状態で `X-Real-IP` を信用すると、訪問者がこのヘッダーを自分で付けて IP アドレスを偽装できます。
+- **信頼できる経路の値だけを返してください。** プロキシを通さずにサイトへ直接アクセスできる環境で、訪問者が自由に書き換えられるヘッダー（`X-Forwarded-For` など）をそのまま返すと、IP アドレスを偽装して失敗の数を避けられてしまいます。
+- フィルターを使わないときの動作は、これまでと同じです（`REMOTE_ADDR` だけを見ます）。
+
 そのため、**「パターンだけでサイト全体の認証が固くなる」わけではありません**。パターンは標準ログイン画面の追加の関門であり、REST API・XML-RPC・アプリケーションパスワードは別途、停止する・制限するなどの対策を検討してください（例: `xmlrpc_enabled` フィルターで XML-RPC を無効化する、不要なアプリケーションパスワードを削除する）。
 
 ### 競合しうるもの
 
 - ログイン画面を独自のデザインに置き換えるプラグイン（カスタムログインページ系）を使う場合、その画面が `login_form` アクションを呼ばないとパターン入力欄が出ません。その状態でもサーバー側の検証は働くため、**ログインできなくなります**。導入前に必ずテストしてください。
-- 2 要素認証（TOTP など）のプラグインとは併用できます。どちらも `authenticate` フィルターを使いますが、パターンは優先度 30、ログイン制限は優先度 5 で動きます。
+- 2 要素認証（TOTP など）のプラグインとは併用できます。どちらも `authenticate` フィルターを使いますが、パターンは優先度 30、ログイン制限は優先度 100 で動きます。
+- `wp-login.php` の中で、別プラグインが独自の `action`（`login_form_<action>` のフック）で認証を行い、その処理が `wp_authenticate()` や `wp_signon()` を呼ぶ場合、パターンの確認が働きます（`action` の値は判定に使いません）。その処理の画面にパターン入力欄が無いと、ログインできません。導入前に必ずテストしてください。
 - キャッシュ系プラグインの影響は受けません（`wp-login.php` は通常キャッシュされません）。
 
 ### JavaScript について
@@ -130,7 +168,9 @@ WordPress 標準のログイン画面に、9 点をなぞるパターンロッ�
 
 - `option_name = 'kashiwazaki_pattern_lock_settings'`
 
-この行を削除すると、パターンは未設定として扱われ、ログインは標準認証に戻ります（失敗回数の設定も既定値に戻ります）。
+この行を削除すると、パターンは未設定として扱われ、ログインは標準認証に戻ります。ログイン制限の設定（失敗の上限回数・制限する時間）は別の行に保存されているため、これらも既定値に戻したいときは、次の行も削除してください。
+
+- `option_name = 'kashiwazaki_pattern_lock_limits'`
 
 ### 注意
 
